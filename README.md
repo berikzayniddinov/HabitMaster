@@ -6,3 +6,6 @@ Team Members
 1. Zayniddinov Berik
 2. Rishat Nurassyl
 3. Myrzan Myrzakhan
+
+Screenshot of the Main Page
+![image](https://github.com/user-attachments/assets/6d3b89b2-0a3e-4e9d-a71b-eb84593d4ab6)
