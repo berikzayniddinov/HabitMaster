@@ -1,5 +1,5 @@
-Project name: HabitMaster
-for running a web-service
+Project name: HabitMaster                                  
+For running a web-service
 
 ![image](https://github.com/user-attachments/assets/8b00b0a9-963c-454a-ae63-048555759a61)
  
