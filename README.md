@@ -47,8 +47,8 @@
    - Myrzan Myrzakhan
 
 7. **Screenshot of the Main Page:**
-   Include a screenshot (e.g., `![image](https://github.com/user-attachments/assets/2c3f7923-e732-4518-bd21-a448977d97e9)
-`) in the repository to showcase the main page interface.
+   ![image](https://github.com/user-attachments/assets/75d7f1eb-ca6c-4246-951c-fbdbaa137913)
+
 
 ---
 
