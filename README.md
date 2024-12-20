@@ -1,18 +1,8 @@
-# HabitMaster
+Project Name: HabitMaster
+Project Description
+HabitMaster is a habit and goal-tracking application designed to help users organize their lives, track their habits, goals, achievements, and notifications. It motivates users to achieve their daily tasks and improve their productivity and personal growth. The target audience includes individuals striving to improve their habits and increase productivity.
 
-📋 Project Description
-
-HabitMaster is a web application for tracking habits and managing goals. It helps users form healthy habits, track progress, and achieve goals.
-
-🔍 Main features:
-
-Create, edit, and delete habits
-Display a list of habits with the current status
-HTML interface with a Go server
-PostgreSQL database with migrations
-
-👥 Team members
-
-Ivan Ivanov (Project Manager)
-Olga Petrova (Backend Developer)
-Alexey Smirnov (Frontend Developer)
+Team Members
+1. Zayniddinov Berik
+2. Rishat Nurassyl
+3. Myrzan Myrzakhan
