@@ -3,16 +3,16 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
-
-	"github.com/gorilla/mux"
+	"strings"
 )
 
-// Goal - структура для представления целей пользователя
+// Goal — структура для целей
 type Goal struct {
 	ID          int    `json:"id"`
-	UserID      int    `json:"user_id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Deadline    string `json:"deadline"`
@@ -20,45 +20,102 @@ type Goal struct {
 	UpdatedAt   string `json:"updated_at"`
 }
 
-// CreateGoal - обработчик для добавления новой цели
+var goalLog = logrus.New()
+
+func init() {
+	goalLog.SetFormatter(&logrus.JSONFormatter{})
+	goalLog.SetLevel(logrus.InfoLevel)
+}
+
+// CreateGoal — Обработчик для добавления цели
 func CreateGoal(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			http.Error(w, "Только POST-запросы разрешены", http.StatusMethodNotAllowed)
-			return
-		}
-
 		var goal Goal
-		if err := json.NewDecoder(r.Body).Decode(&goal); err != nil {
-			http.Error(w, "Неверный формат данных", http.StatusBadRequest)
+		decoder := json.NewDecoder(r.Body)
+		decoder.DisallowUnknownFields()
+
+		if err := decoder.Decode(&goal); err != nil {
+			goalLog.WithFields(logrus.Fields{
+				"error": err.Error(),
+			}).Error("Invalid input for goal creation")
+			http.Error(w, "Invalid input", http.StatusBadRequest)
 			return
 		}
 
-		if goal.UserID == 0 || goal.Name == "" || goal.Description == "" || goal.Deadline == "" {
-			http.Error(w, "Все поля обязательны для заполнения", http.StatusBadRequest)
-			return
-		}
-
-		// Выполняем запрос с возвратом данных
-		query := `INSERT INTO goals (user_id, name, description, deadline, created_at, updated_at) 
-		          VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id, created_at, updated_at`
-		err := db.QueryRow(query, goal.UserID, goal.Name, goal.Description, goal.Deadline).Scan(&goal.ID, &goal.CreatedAt, &goal.UpdatedAt)
+		query := `INSERT INTO goals (name, description, deadline, created_at, updated_at) 
+		          VALUES ($1, $2, $3, NOW(), NOW()) RETURNING id, created_at, updated_at`
+		err := db.QueryRow(query, goal.Name, goal.Description, goal.Deadline).Scan(&goal.ID, &goal.CreatedAt, &goal.UpdatedAt)
 		if err != nil {
-			http.Error(w, "Ошибка при добавлении цели в базу данных", http.StatusInternalServerError)
+			goalLog.WithFields(logrus.Fields{
+				"error":       err.Error(),
+				"name":        goal.Name,
+				"description": goal.Description,
+				"deadline":    goal.Deadline,
+			}).Error("Failed to create goal")
+			http.Error(w, "Failed to create goal", http.StatusInternalServerError)
 			return
 		}
+
+		goalLog.WithFields(logrus.Fields{
+			"id":          goal.ID,
+			"name":        goal.Name,
+			"description": goal.Description,
+			"deadline":    goal.Deadline,
+		}).Info("Goal created successfully")
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(goal) // Возвращаем полный объект
+		json.NewEncoder(w).Encode(goal)
 	}
 }
 
-// GetGoals - обработчик для получения списка целей
+// GetGoals — Обработчик для получения списка целей
 func GetGoals(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		rows, err := db.Query("SELECT id, user_id, name, description, deadline, created_at, updated_at FROM goals")
+		filter := r.URL.Query().Get("filter")
+		sort := r.URL.Query().Get("sort")
+		page := r.URL.Query().Get("page")
+
+		limit := 10
+		offset := 0
+
+		if p, err := strconv.Atoi(page); err == nil && p > 1 {
+			offset = (p - 1) * limit
+		}
+
+		query := "SELECT id, name, description, deadline, created_at, updated_at FROM goals"
+		var args []interface{}
+
+		if filter != "" {
+			query += fmt.Sprintf(" WHERE name ILIKE $%d", len(args)+1)
+			args = append(args, "%"+filter+"%")
+		}
+
+		if sort != "" {
+			allowedSorts := map[string]bool{
+				"name":       true,
+				"deadline":   true,
+				"created_at": true,
+				"updated_at": true,
+			}
+			if allowedSorts[strings.ToLower(sort)] {
+				query += " ORDER BY " + sort
+			} else {
+				http.Error(w, "Invalid sort field", http.StatusBadRequest)
+				return
+			}
+		}
+
+		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", len(args)+1, len(args)+2)
+		args = append(args, limit, offset)
+
+		rows, err := db.Query(query, args...)
 		if err != nil {
-			http.Error(w, "Ошибка при получении данных из базы", http.StatusInternalServerError)
+			goalLog.WithFields(logrus.Fields{
+				"error": err.Error(),
+				"query": query,
+				"args":  args,
+			}).Error("Failed to retrieve goals")
+			http.Error(w, "Failed to retrieve goals", http.StatusInternalServerError)
 			return
 		}
 		defer rows.Close()
@@ -66,16 +123,19 @@ func GetGoals(db *sql.DB) http.HandlerFunc {
 		var goals []Goal
 		for rows.Next() {
 			var goal Goal
-			if err := rows.Scan(&goal.ID, &goal.UserID, &goal.Name, &goal.Description, &goal.Deadline, &goal.CreatedAt, &goal.UpdatedAt); err != nil {
-				http.Error(w, "Ошибка при обработке данных из базы", http.StatusInternalServerError)
+			if err := rows.Scan(&goal.ID, &goal.Name, &goal.Description, &goal.Deadline, &goal.CreatedAt, &goal.UpdatedAt); err != nil {
+				goalLog.WithFields(logrus.Fields{
+					"error": err.Error(),
+				}).Error("Failed to scan goals")
+				http.Error(w, "Failed to scan goals", http.StatusInternalServerError)
 				return
 			}
 			goals = append(goals, goal)
 		}
 
-		// Проверка ошибок при итерации через строки
-		if err := rows.Err(); err != nil {
-			http.Error(w, "Ошибка при обработке строк результата", http.StatusInternalServerError)
+		if len(goals) == 0 {
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode([]Goal{})
 			return
 		}
 
@@ -84,72 +144,77 @@ func GetGoals(db *sql.DB) http.HandlerFunc {
 	}
 }
 
-// UpdateGoal - обработчик для изменения цели
-func UpdateGoalByName(db *sql.DB) http.HandlerFunc {
+// UpdateGoal — Обработчик для обновления цели
+func UpdateGoal(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPut {
-			http.Error(w, "Только PUT-запросы разрешены", http.StatusMethodNotAllowed)
-			return
+		var goal struct {
+			OldName     string `json:"oldName"`
+			Name        string `json:"name"`
+			Description string `json:"description"`
+			Deadline    string `json:"deadline"`
 		}
 
-		var goal Goal
 		if err := json.NewDecoder(r.Body).Decode(&goal); err != nil {
-			http.Error(w, "Неверный формат данных", http.StatusBadRequest)
+			http.Error(w, "Invalid input format", http.StatusBadRequest)
 			return
 		}
 
-		// Проверка, что name передан
-		if goal.Name == "" {
-			http.Error(w, "Поле name обязательно", http.StatusBadRequest)
-			return
-		}
-
-		// Обновление записи по названию
-		query := `UPDATE goals SET description = $1, deadline = $2, updated_at = NOW() WHERE name = $3`
-		result, err := db.Exec(query, goal.Description, goal.Deadline, goal.Name)
+		query := `UPDATE goals 
+		          SET name = $1, description = $2, deadline = $3, updated_at = NOW() 
+		          WHERE name = $4`
+		res, err := db.Exec(query, goal.Name, goal.Description, goal.Deadline, goal.OldName)
 		if err != nil {
-			http.Error(w, "Ошибка при обновлении цели", http.StatusInternalServerError)
+			http.Error(w, "Failed to update goal", http.StatusInternalServerError)
 			return
 		}
 
-		rowsAffected, _ := result.RowsAffected()
+		rowsAffected, _ := res.RowsAffected()
 		if rowsAffected == 0 {
-			http.Error(w, "Цель с указанным названием не найдена", http.StatusNotFound)
+			http.Error(w, "Goal with the specified name not found", http.StatusNotFound)
 			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{
-			"message": "Цель успешно обновлена",
+			"message": "Goal successfully updated",
 		})
 	}
 }
 
-// DeleteGoal - обработчик для удаления цели
-func DeleteGoal(db *sql.DB) http.HandlerFunc {
+// DeleteGoalByName — Обработчик для удаления цели по названию
+func DeleteGoalByName(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodDelete {
-			http.Error(w, "Только DELETE-запросы разрешены", http.StatusMethodNotAllowed)
+		log.Println("DeleteGoalByName called") // Отладка
+
+		name := r.URL.Query().Get("name")
+		if name == "" {
+			log.Println("Missing 'name' parameter")
+			http.Error(w, "Goal name is required", http.StatusBadRequest)
 			return
 		}
 
-		vars := mux.Vars(r)
-		id, err := strconv.Atoi(vars["id"])
+		log.Printf("Attempting to delete goal: %s", name) // Отладка
+
+		query := `DELETE FROM goals WHERE name = $1`
+		res, err := db.Exec(query, name)
 		if err != nil {
-			http.Error(w, "Неверный ID цели", http.StatusBadRequest)
+			log.Printf("Failed to delete goal: %s", err.Error()) // Отладка
+			http.Error(w, "Failed to delete goal", http.StatusInternalServerError)
 			return
 		}
 
-		query := `DELETE FROM goals WHERE id = $1`
-		_, err = db.Exec(query, id)
-		if err != nil {
-			http.Error(w, "Ошибка при удалении цели", http.StatusInternalServerError)
+		rowsAffected, _ := res.RowsAffected()
+		if rowsAffected == 0 {
+			log.Printf("Goal with the name '%s' not found", name) // Отладка
+			http.Error(w, "Goal with the specified name not found", http.StatusNotFound)
 			return
 		}
+
+		log.Printf("Goal '%s' deleted successfully", name) // Отладка
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{
-			"message": "Цель успешно удалена",
+			"message": "Goal successfully deleted",
 		})
 	}
 }

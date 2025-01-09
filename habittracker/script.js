@@ -1,12 +1,9 @@
-// Счетчики для ID элементов
-let habitIdCounter = 1;
-
 // Создание карточки элемента
 function createCard(id, title, description, date, type, extra = '', actions = []) {
     const container = document.getElementById(`${type}-container`);
     const card = document.createElement('div');
     card.classList.add('card');
-    card.dataset.id = id || 'No ID';
+    card.dataset.name = title || 'No Name'; // Привязка к текущему названию
 
     card.innerHTML = `
         <h3>${title || 'No Title'}</h3>
@@ -21,6 +18,7 @@ function createCard(id, title, description, date, type, extra = '', actions = []
     container.appendChild(card);
 }
 
+
 // Создание кнопки действия
 function createActionButton(text, className, onclick) {
     const button = document.createElement('button');
@@ -30,348 +28,699 @@ function createActionButton(text, className, onclick) {
     return button;
 }
 
+// Добавление привычки
+let currentHabitPage = 1;
 
+// Получение привычек
+async function getHabits() {
+    const filter = document.getElementById('habit-filter')?.value || '';
+    const sort = document.getElementById('habit-sort')?.value || '';
+    const page = currentHabitPage;
 
-// Работа с привычками
-// Работа с привычками
+    const url = `http://localhost:8080/api/habits?filter=${encodeURIComponent(filter)}&sort=${encodeURIComponent(sort)}&page=${page}`;
+    try {
+        const response = await fetch(url, { method: 'GET' });
+        if (!response.ok) {
+            throw new Error(`Error fetching habits: ${response.statusText}`);
+        }
+
+        const habits = await response.json();
+        const container = document.getElementById('habits-container');
+        container.innerHTML = ''; // Очистка контейнера
+
+        if (!habits || habits.length === 0) {
+            container.innerHTML = '<p>No habits found.</p>';
+            return;
+        }
+
+        habits.forEach(habit => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <h3>${habit.name}</h3>
+                <p><strong>Description:</strong> ${habit.description}</p>
+                <p><strong>Created At:</strong> ${new Date(habit.created_at).toLocaleString()}</p>
+                <div class="card-actions">
+                    <button class="edit" onclick="editHabit('${habit.name}', '${habit.description}')">Edit</button>
+                    <button class="delete" onclick="deleteHabit('${habit.name}')">Delete</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        updateHabitPaginationControls();
+    } catch (error) {
+        console.error('Error fetching habits:', error.message);
+        alert('Failed to fetch habits.');
+    }
+}
+
+function applyHabitFilterSort() {
+    getHabits();
+}
+
+// Пагинация
+function updateHabitPaginationControls() {
+    const paginationContainer = document.getElementById('habits-pagination');
+    paginationContainer.innerHTML = `
+        <button onclick="prevHabitPage()">Previous</button>
+        <button onclick="nextHabitPage()">Next</button>
+    `;
+}
+
+function prevHabitPage() {
+    if (currentHabitPage > 1) {
+        currentHabitPage--;
+        getHabits();
+    }
+}
+
+function nextHabitPage() {
+    currentHabitPage++;
+    getHabits();
+}
 
 // Добавление привычки
 async function addHabit() {
     const name = prompt('Enter habit name:');
     const description = prompt('Enter habit description:');
-    const habit = { user_id: 1, name, description };
 
-    const response = await fetch('http://localhost:8080/api/habits', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(habit)
-    });
-
-    if (response.ok) {
-        const newHabit = await response.json();
-        console.log('Habit added:', newHabit); // Для проверки
-        getHabits(); // Обновление списка привычек
-    } else {
-        alert('Error adding habit.');
+    if (!name) {
+        alert('Habit name is required!');
+        return;
     }
-}
 
-// Получение привычек
-async function getHabits() {
-    const response = await fetch('http://localhost:8080/api/habits', { method: 'GET' });
-    if (response.ok) {
-        const habits = await response.json();
-        const container = document.getElementById('habits-container');
-        container.innerHTML = ''; // Очистка старых карточек
+    const habit = { name, description };
 
-        habits.forEach(habit => {
-            createCard(
-                habit.id,
-                habit.name,
-                habit.description,
-                new Date(habit.created_at).toLocaleString(),
-                'habits',
-                '',
-                [
-                    createActionButton('Edit', 'edit', () => editHabit(habit.id)),
-                    createActionButton('Delete', 'delete', () => deleteHabit(habit.id))
-                ]
-            );
+    try {
+        const response = await fetch('http://localhost:8080/api/habits', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(habit),
         });
-    } else {
-        alert('Error fetching habits.');
+
+        if (response.ok) {
+            alert('Habit successfully added!');
+            getHabits();
+        } else {
+            const errorText = await response.text();
+            console.error('Error adding habit:', errorText);
+            alert('Error adding habit.');
+        }
+    } catch (error) {
+        console.error('Unexpected error adding habit:', error);
+        alert('Unexpected error adding habit.');
     }
 }
-
-
-async function editHabit(id) {
-    const name = prompt('Enter new habit name:');
-    const description = prompt('Enter new habit description:');
-
-    const updatedHabit = { name, description };
-
-    const response = await fetch(`http://localhost:8080/api/habits/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedHabit)
-    });
-
-    if (response.ok) {
-        alert('Habit successfully updated!');
-        getHabits(); // Обновление списка привычек
-    } else {
-        alert('Error updating habit.');
-    }
-}
-
 
 // Удаление привычки
-async function deleteHabit(id) {
-    const response = await fetch(`http://localhost:8080/api/habits/${id}`, { method: 'DELETE' });
-    if (response.ok) {
-        alert('Habit successfully deleted!');
-        getHabits(); // Обновление списка привычек
-    } else {
-        alert('Error deleting habit.');
+async function deleteHabit(name) {
+    try {
+        const response = await fetch(`http://localhost:8080/api/habits?name=${encodeURIComponent(name)}`, {
+            method: 'DELETE',
+        });
+
+        if (response.ok) {
+            alert('Habit successfully deleted!');
+            getHabits(); // Обновить список привычек
+        } else {
+            const errorText = await response.text();
+            console.error('Error deleting habit:', errorText);
+            alert(`Error deleting habit: ${errorText}`);
+        }
+    } catch (error) {
+        console.error('Unexpected error deleting habit:', error);
+        alert('Unexpected error deleting habit.');
     }
 }
+
+// Редактирование привычки
+async function editHabit(oldName, currentDescription) {
+    const newName = prompt('Enter new habit name:', oldName);
+    const newDescription = prompt('Enter new habit description:', currentDescription);
+
+    if (!newName) {
+        alert('Habit name is required!');
+        return;
+    }
+
+    const updatedHabit = { oldName, name: newName, description: newDescription };
+
+    try {
+        const response = await fetch('http://localhost:8080/api/habits', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedHabit),
+        });
+
+        if (response.ok) {
+            alert('Habit successfully updated!');
+            getHabits();
+        } else {
+            const errorText = await response.text();
+            console.error('Error updating habit:', errorText);
+            alert('Error updating habit.');
+        }
+    } catch (error) {
+        console.error('Unexpected error updating habit:', error);
+        alert('Unexpected error updating habit.');
+    }
+}
+
+// Инициализация
+window.onload = getHabits;
+
+
 
 
 // Вызов получения привычек при загрузке страницы
 window.onload = getHabits;
 
 
+let currentGoalPage = 1;
+
+// Получение целей
+async function getGoals() {
+    const filter = document.getElementById('goal-filter')?.value || '';
+    const sort = document.getElementById('goal-sort')?.value || '';
+    const page = currentGoalPage;
+
+    const url = `http://localhost:8080/api/goals?filter=${encodeURIComponent(filter)}&sort=${encodeURIComponent(sort)}&page=${page}`;
+    try {
+        const response = await fetch(url, { method: 'GET' });
+        if (!response.ok) {
+            throw new Error(`Error fetching goals: ${response.statusText}`);
+        }
+
+        const goals = await response.json();
+        const container = document.getElementById('goals-container');
+        container.innerHTML = ''; // Очистка контейнера
+
+        if (!goals || goals.length === 0) {
+            container.innerHTML = '<p>No goals found.</p>';
+            return;
+        }
+
+        goals.forEach(goal => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <h3>${goal.name}</h3>
+                <p><strong>Description:</strong> ${goal.description}</p>
+                <p><strong>Deadline:</strong> ${new Date(goal.deadline).toLocaleDateString()}</p>
+                <div class="card-actions">
+                    <button class="edit" onclick="editGoal('${goal.name}', '${goal.description}', '${goal.deadline}')">Edit</button>
+                    <button class="delete" onclick="deleteGoalByName('${goal.name}')">Delete</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        updateGoalPaginationControls();
+    } catch (error) {
+        console.error('Error fetching goals:', error.message);
+        alert('Failed to fetch goals.');
+    }
+}
+
+// Применение фильтров и сортировки
+function applyGoalFilterSort() {
+    getGoals();
+}
+
+// Пагинация
+function updateGoalPaginationControls() {
+    const paginationContainer = document.getElementById('goals-pagination');
+    paginationContainer.innerHTML = `
+        <button onclick="prevGoalPage()">Previous</button>
+        <button onclick="nextGoalPage()">Next</button>
+    `;
+}
+
+function prevGoalPage() {
+    if (currentGoalPage > 1) {
+        currentGoalPage--;
+        getGoals();
+    }
+}
+
+function nextGoalPage() {
+    currentGoalPage++;
+    getGoals();
+}
+
 // Добавление цели
 async function addGoal() {
     const name = prompt('Enter goal name:');
     const description = prompt('Enter goal description:');
     const deadline = prompt('Enter deadline (YYYY-MM-DD):');
-    const goal = { user_id: 1, name, description, deadline };
 
-
-    const response = await fetch('http://localhost:8080/api/goals', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(goal)
-    });
-
-    if (response.ok) {
-        const newGoal = await response.json();
-        console.log('Goal added:', newGoal); // Для проверки
-        getGoals();
-
-    } else {
-        alert('Error adding goal.');
+    if (!name || !deadline) {
+        alert('Name and deadline are required!');
+        return;
     }
-}
 
-// Изменение цели
-async function editGoal(event) {
-    const card = event.target.closest('.card');
-    const name = card.querySelector('h3').textContent; // Получаем название цели
-    const description = card.querySelector('p:first-of-type').textContent;
-    const extra = card.querySelector('p:nth-of-type(4)');
+    const goal = { name, description, deadline };
 
-    const newDescription = prompt('Edit goal description:', description);
-    const newDeadline = prompt('Edit deadline (YYYY-MM-DD):', extra.textContent.split(': ')[1]);
-
-    const updatedGoal = {
-        name: name, // Название цели вместо ID
-        description: newDescription || description,
-        deadline: newDeadline || extra.textContent.split(': ')[1],
-    };
-
-    const response = await fetch('http://localhost:8080/api/goals/update-by-name', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedGoal),
-    });
-
-    if (response.ok) {
-        alert('Goal successfully updated!');
-        card.querySelector('p:first-of-type').textContent = updatedGoal.description;
-        extra.innerHTML = `<strong>Deadline:</strong> ${updatedGoal.deadline}`;
-    } else {
-        const error = await response.text();
-        console.error('Error updating goal:', error);
-        alert('Error updating goal.');
-    }
-}
-async function getGoals() {
-    const response = await fetch('http://localhost:8080/api/get-goals', { method: 'GET' });
-    if (response.ok) {
-        const goals = await response.json();
-        const container = document.getElementById('goals-container');
-        container.innerHTML = ''; // Очистка контейнера
-
-        goals.forEach(goal => {
-            createCard(
-                goal.id,
-                goal.name,
-                goal.description,
-                new Date(goal.created_at).toLocaleString(),
-                "goals",
-                `<strong>Deadline:</strong> ${goal.deadline}`,
-                [
-                    createActionButton('Edit', 'edit', () => editGoal(goal.name)),
-                    createActionButton('Delete', 'delete', () => deleteGoal(goal.id))
-                ]
-            );
+    try {
+        const response = await fetch('http://localhost:8080/api/goals', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(goal),
         });
-    } else {
-        console.error('Error fetching goals:', await response.text());
-        alert('Error fetching goals.');
+
+        if (response.ok) {
+            alert('Goal successfully added!');
+            getGoals();
+        } else {
+            const errorText = await response.text();
+            console.error('Error adding goal:', errorText);
+            alert('Error adding goal.');
+        }
+    } catch (error) {
+        console.error('Unexpected error adding goal:', error);
+        alert('Unexpected error adding goal.');
+    }
+}
+
+// Удаление цели по имени
+async function deleteGoalByName(name) {
+    try {
+        const response = await fetch(`http://localhost:8080/api/goals/deleteByName?name=${encodeURIComponent(name)}`, {
+            method: 'DELETE',
+        });
+
+        if (response.ok) {
+            alert('Goal successfully deleted!');
+            getGoals(); // Обновить список целей
+        } else {
+            const errorText = await response.text();
+            console.error('Error deleting goal:', errorText);
+            alert(`Error deleting goal: ${errorText}`);
+        }
+    } catch (error) {
+        console.error('Unexpected error deleting goal:', error);
+        alert('Unexpected error deleting goal.');
     }
 }
 
 
 
-// Удаление цели
-async function deleteGoal(event) {
-    const card = event.target.closest('.card');
-    const id = card.dataset.id;
 
-    const response = await fetch(`http://localhost:8080/api/goals/${id}`, {
-        method: 'DELETE'
-    });
+// Редактирование цели
+async function editGoal(currentName, currentDescription, currentDeadline) {
+    const newName = prompt('Enter new name:', currentName);
+    const newDescription = prompt('Enter new description:', currentDescription);
+    const newDeadline = prompt('Enter new deadline (YYYY-MM-DD):', currentDeadline);
 
-    if (response.ok) {
-        card.remove();
-        alert('Goal successfully deleted!');
-    } else {
-        alert('Error deleting goal.');
+    if (!newName || !newDeadline) {
+        alert('Name and deadline are required!');
+        return;
+    }
+
+    const updatedGoal = { oldName: currentName, name: newName, description: newDescription, deadline: newDeadline };
+
+    try {
+        const response = await fetch('http://localhost:8080/api/goals', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedGoal),
+        });
+
+        if (response.ok) {
+            alert('Goal successfully updated!');
+            getGoals();
+        } else {
+            const errorText = await response.text();
+            console.error('Error updating goal:', errorText);
+            alert('Error updating goal.');
+        }
+    } catch (error) {
+        console.error('Unexpected error updating goal:', error);
+        alert('Unexpected error updating goal.');
     }
 }
+
+// Инициализация
+window.onload = getGoals;
+
+// Вызов получения целей при загрузке страницы
+window.onload = getGoals;
+
+
+// Automatically load goals when the page loads
+window.onload = getGoals;
+
 window.onload = getGoals();
 
 // Добавление достижения
 // Работа с достижениями (Achievements)
 
 // Добавление достижения
-async function addAchievement() {
-    const title = prompt('Enter achievement title:');
-    const description = prompt('Enter achievement description:');
-    const achievement = {
-        user_id: 1, // ID пользователя
-        title,
-        description,
-        date: new Date().toISOString() // Текущая дата
-    };
+// Получение достижений
+let currentAchievementPage = 1;
 
-    const response = await fetch('http://localhost:8080/api/achievements', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(achievement)
-    });
+// Получение достижений
+async function getAchievements() {
+    const filter = document.getElementById('achievement-filter')?.value || '';
+    const sort = document.getElementById('achievement-sort')?.value || '';
+    const page = currentAchievementPage;
 
-    if (response.ok) {
-        const newAchievement = await response.json();
-        console.log('Achievement added:', newAchievement);
-        getAchievements(); // Обновление списка достижений
-    } else {
-        console.error('Error adding achievement:', await response.text());
-        alert('Error adding achievement.');
+    const url = `http://localhost:8080/api/achievements?filter=${encodeURIComponent(filter)}&sort=${encodeURIComponent(sort)}&page=${page}`;
+    try {
+        const response = await fetch(url, { method: 'GET' });
+        if (!response.ok) {
+            throw new Error(`Error fetching achievements: ${response.statusText}`);
+        }
+
+        const achievements = await response.json();
+        const container = document.getElementById('achievements-container');
+        container.innerHTML = ''; // Очистка контейнера
+
+        if (!achievements || achievements.length === 0) {
+            container.innerHTML = '<p>No achievements found.</p>';
+            return;
+        }
+
+        achievements.forEach(achievement => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <h3>${achievement.title}</h3>
+                <p><strong>Description:</strong> ${achievement.description}</p>
+                <p><strong>Date:</strong> ${new Date(achievement.date).toLocaleString()}</p>
+                <div class="card-actions">
+                    <button class="edit" onclick="editAchievement('${achievement.title}', '${achievement.description}')">Edit</button>
+                    <button class="delete" onclick="deleteAchievement('${achievement.title}')">Delete</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        updateAchievementPaginationControls();
+    } catch (error) {
+        console.error('Error fetching achievements:', error.message);
+        alert('Failed to fetch achievements.');
     }
 }
 
-// Получение списка достижений
-async function getAchievements() {
-    const response = await fetch('http://localhost:8080/api/achievements', { method: 'GET' });
-    if (response.ok) {
-        const achievements = await response.json();
-        const container = document.getElementById('achievements-container');
-        container.innerHTML = ''; // Очистка старых карточек
+// Фильтр и сортировка
+function applyAchievementFilterSort() {
+    getAchievements();
+}
 
-        achievements.forEach(achievement => {
-            createCard(
-                achievement.id,
-                achievement.title,
-                achievement.description,
-                new Date(achievement.date).toLocaleString(),
-                'achievements',
-                '',
-                [
-                    createActionButton('Delete', 'delete', () => deleteAchievement(achievement.id))
-                ]
-            );
+// Пагинация
+function updateAchievementPaginationControls() {
+    const paginationContainer = document.getElementById('achievements-pagination');
+    paginationContainer.innerHTML = `
+        <button onclick="prevAchievementPage()">Previous</button>
+        <button onclick="nextAchievementPage()">Next</button>
+    `;
+}
+
+function prevAchievementPage() {
+    if (currentAchievementPage > 1) {
+        currentAchievementPage--;
+        getAchievements();
+    }
+}
+
+function nextAchievementPage() {
+    currentAchievementPage++;
+    getAchievements();
+}
+
+// Добавление достижения
+async function addAchievement() {
+    const title = prompt('Enter achievement title:');
+    const description = prompt('Enter achievement description:');
+
+    if (!title || !description) {
+        alert('Both title and description are required!');
+        return;
+    }
+
+    const achievement = { title, description };
+
+    try {
+        const response = await fetch('http://localhost:8080/api/achievements', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(achievement),
         });
-    } else {
-        console.error('Error fetching achievements:', await response.text());
-        alert('Error fetching achievements.');
+
+        if (response.ok) {
+            alert('Achievement successfully added!');
+            getAchievements();
+        } else {
+            const errorText = await response.text();
+            console.error('Error adding achievement:', errorText);
+            alert('Error adding achievement.');
+        }
+    } catch (error) {
+        console.error('Unexpected error adding achievement:', error);
+        alert('Unexpected error adding achievement.');
     }
 }
 
 // Удаление достижения
-async function deleteAchievement(id) {
-    const response = await fetch(`http://localhost:8080/api/achievements/${id}`, { method: 'DELETE' });
-    if (response.ok) {
-        alert('Achievement successfully deleted!');
-        getAchievements(); // Обновление списка достижений
-    } else {
-        console.error('Error deleting achievement:', await response.text());
-        alert('Error deleting achievement.');
+async function deleteAchievement(title) {
+    try {
+        const response = await fetch(`http://localhost:8080/api/achievements?title=${encodeURIComponent(title)}`, {
+            method: 'DELETE',
+        });
+
+        if (response.ok) {
+            alert('Achievement successfully deleted!');
+            getAchievements();
+        } else {
+            const errorText = await response.text();
+            console.error('Error deleting achievement:', errorText);
+            alert(`Error deleting achievement: ${errorText}`);
+        }
+    } catch (error) {
+        console.error('Unexpected error deleting achievement:', error);
+        alert('Unexpected error deleting achievement.');
     }
 }
 
-// Вызов получения достижений при загрузке страницы
+// Редактирование достижения
+async function editAchievement(currentTitle, currentDescription) {
+    const newTitle = prompt('Enter new title:', currentTitle);
+    const newDescription = prompt('Enter new description:', currentDescription);
+
+    if (!newTitle || !newDescription) {
+        alert('Both title and description are required!');
+        return;
+    }
+
+    const updatedAchievement = { oldTitle: currentTitle, title: newTitle, description: newDescription };
+
+    try {
+        const response = await fetch('http://localhost:8080/api/achievements', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedAchievement),
+        });
+
+        if (response.ok) {
+            alert('Achievement successfully updated!');
+            getAchievements();
+        } else {
+            const errorText = await response.text();
+            console.error('Error updating achievement:', errorText);
+            alert('Failed to update achievement.');
+        }
+    } catch (error) {
+        console.error('Unexpected error updating achievement:', error);
+        alert('Unexpected error updating achievement.');
+    }
+}
+
+// Инициализация
 window.onload = function () {
     getAchievements();
 };
 
+let currentNotificationPage = 1;
 
-// Добавление уведомления
-async function addNotification() {
-    const message = prompt('Enter notification message:'); // Запрос сообщения
-    const notification = {
-        user_id: 1,
-        message,
-        scheduled_at: new Date().toISOString() // Планируемая дата
-    };
-
-    const response = await fetch('http://localhost:8080/api/notifications', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(notification)
-    });
-
-    if (response.ok) {
-        const newNotification = await response.json();
-        createCard(
-            newNotification.id,
-            'Notification',
-            newNotification.message,
-            new Date(newNotification.scheduled_at).toLocaleString(),
-            'notifications',
-            `<strong>Is Sent:</strong> ${newNotification.is_sent ? 'Yes' : 'No'}`,
-            [
-                createActionButton('Delete', 'delete', () => deleteNotification(newNotification.id))
-            ]
-        );
-        alert('Notification successfully added!');
-    } else {
-        console.error('Error adding notification:', await response.text());
-        alert('Error adding notification.');
-    }
-}
-
-// Получение списка уведомлений
+// Получение уведомлений
 async function getNotifications() {
-    const response = await fetch('http://localhost:8080/api/notifications', { method: 'GET' });
-    if (response.ok) {
+    const filter = document.getElementById('notification-filter')?.value || '';
+    const sort = document.getElementById('notification-sort')?.value || '';
+    const page = currentNotificationPage;
+
+    const url = `http://localhost:8080/api/notifications?filter=${encodeURIComponent(filter)}&sort=${encodeURIComponent(sort)}&page=${page}`;
+    try {
+        const response = await fetch(url, { method: 'GET' });
+        if (!response.ok) {
+            throw new Error(`Error fetching notifications: ${response.statusText}`);
+        }
+
         const notifications = await response.json();
         const container = document.getElementById('notifications-container');
         container.innerHTML = ''; // Очистка контейнера
 
+        if (!notifications || notifications.length === 0) {
+            container.innerHTML = '<p>No notifications found.</p>';
+            return;
+        }
+
         notifications.forEach(notification => {
-            createCard(
-                notification.id,
-                'Notification',
-                notification.message,
-                new Date(notification.scheduled_at).toLocaleString(),
-                'notifications',
-                `<strong>Is Sent:</strong> ${notification.is_sent ? 'Yes' : 'No'}`,
-                [
-                    createActionButton('Delete', 'delete', () => deleteNotification(notification.id))
-                ]
-            );
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <h3>${notification.message}</h3>
+                <p><strong>Scheduled At:</strong> ${new Date(notification.scheduled_at).toLocaleString()}</p>
+                <p><strong>Is Sent:</strong> ${notification.is_sent ? 'Yes' : 'No'}</p>
+                <div class="card-actions">
+                    <button class="edit" onclick="editNotification(${notification.id}, '${notification.message}', '${notification.scheduled_at}', ${notification.is_sent})">Edit</button>
+                    <button class="delete" onclick="deleteNotificationByName('${notification.message}')">Delete</button>
+                </div>
+            `;
+            container.appendChild(card);
         });
-    } else {
-        console.error('Error fetching notifications:', await response.text());
-        alert('Error fetching notifications.');
+
+        updatePaginationControls();
+    } catch (error) {
+        console.error('Error fetching notifications:', error.message);
+        alert('Failed to fetch notifications.');
+    }
+}
+
+
+function applyNotificationFilterSort() {
+    getNotifications();
+}
+
+
+// Пагинация
+function updatePaginationControls() {
+    const paginationContainer = document.getElementById('notifications-pagination');
+    paginationContainer.innerHTML = `
+        <button onclick="prevPage()">Previous</button>
+        <button onclick="nextPage()">Next</button>
+    `;
+}
+
+function prevPage() {
+    if (currentNotificationPage > 1) {
+        currentNotificationPage--;
+        getNotifications();
+    }
+}
+
+function nextPage() {
+    currentNotificationPage++;
+    getNotifications();
+}
+
+// Добавление уведомления
+async function addNotification() {
+    const message = prompt('Enter notification message:');
+    const scheduledAt = prompt('Enter scheduled date and time (YYYY-MM-DDTHH:mm:ss):');
+
+    if (!message || !scheduledAt) {
+        alert('Both message and scheduled date are required!');
+        return;
+    }
+
+    const notification = { message, scheduled_at: scheduledAt };
+
+    try {
+        const response = await fetch('http://localhost:8080/api/notifications', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(notification),
+        });
+
+        if (response.ok) {
+            alert('Notification successfully added!');
+            getNotifications();
+        } else {
+            const errorText = await response.text();
+            console.error('Error adding notification:', errorText);
+            alert('Error adding notification.');
+        }
+    } catch (error) {
+        console.error('Unexpected error adding notification:', error);
+        alert('Unexpected error adding notification.');
     }
 }
 
 // Удаление уведомления
-async function deleteNotification(id) {
-    const response = await fetch(`http://localhost:8080/api/notifications/${id}`, { method: 'DELETE' });
-    if (response.ok) {
-        alert('Notification successfully deleted!');
-        getNotifications(); // Обновить список уведомлений
-    } else {
-        console.error('Error deleting notification:', await response.text());
-        alert('Error deleting notification.');
+// Удаление уведомления по имени
+async function deleteNotificationByName(message) {
+    try {
+        const response = await fetch(`http://localhost:8080/api/notifications/deleteByName?message=${encodeURIComponent(message)}`, {
+            method: 'DELETE',
+        });
+
+        if (response.ok) {
+            alert('Notification successfully deleted!');
+            getNotifications(); // Обновить список уведомлений
+        } else {
+            const errorText = await response.text();
+            console.error('Error deleting notification:', errorText);
+            alert(`Error deleting notification: ${errorText}`);
+        }
+    } catch (error) {
+        console.error('Unexpected error deleting notification:', error);
+        alert('Unexpected error deleting notification.');
     }
 }
+
+
+
+// Редактирование уведомления
+async function editNotification(id, currentMessage, scheduledAt, isSent) {
+    const newMessage = prompt('Enter new message:', currentMessage);
+    const newScheduledAt = prompt('Enter new scheduled date (YYYY-MM-DDTHH:mm:ss):', scheduledAt);
+
+    if (!newMessage || !newScheduledAt) {
+        alert('All fields are required!');
+        return;
+    }
+
+    const updatedNotification = {
+        oldMessage: currentMessage,
+        message: newMessage,
+        scheduled_at: newScheduledAt,
+        is_sent: isSent
+    };
+
+    try {
+        const response = await fetch('http://localhost:8080/api/notifications', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedNotification),
+        });
+
+        if (response.ok) {
+            alert('Notification successfully updated!');
+            getNotifications();
+        } else {
+            const errorText = await response.text();
+            console.error('Error updating notification:', errorText);
+            alert('Failed to update notification.');
+        }
+    } catch (error) {
+        console.error('Unexpected error updating notification:', error);
+        alert('Unexpected error updating notification.');
+    }
+}
+
+// Инициализация
+window.onload = getNotifications;
+
+
+
+
+
+
+
+// Вызов получения уведомлений при загрузке страницы
+window.onload = getNotifications;
 
 
 window.onload = function () {
@@ -380,3 +729,47 @@ window.onload = function () {
     getAchievements();
     getNotifications();
 };
+
+async function sendEmail() {
+    const recipients = document.getElementById('email-recipients').value;
+    const subject = document.getElementById('email-subject').value;
+    const body = document.getElementById('email-body').value;
+
+    if (!recipients || !subject || !body) {
+        alert('All fields are required!');
+        return;
+    }
+
+    // Логируем данные для отладки
+    console.log({
+        emails: recipients.split(','), // Убедитесь, что здесь корректные email
+        subject: subject,
+        body: body
+    });
+
+    try {
+        const response = await fetch('http://localhost:8080/api/admin/send-mass-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                emails: recipients.split(','), // Изменено на emails
+                subject: subject,
+                body: body
+            }),
+        });
+
+        if (response.ok) {
+            alert('Email sent successfully!');
+            document.getElementById('email-recipients').value = '';
+            document.getElementById('email-subject').value = '';
+            document.getElementById('email-body').value = '';
+        } else {
+            const errorText = await response.text();
+            console.error('Error sending email:', errorText);
+            alert('Failed to send email.');
+        }
+    } catch (error) {
+        console.error('Unexpected error:', error);
+        alert('Unexpected error occurred.');
+    }
+}

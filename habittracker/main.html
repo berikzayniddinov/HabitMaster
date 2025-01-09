@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Habit and Goal Tracker</title>
+    <title>Habit, Goal, and Achievement Tracker</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -54,9 +54,6 @@
             background-color: #007BFF;
             color: white;
         }
-        .card-actions button.done {
-            background-color: #28a745;
-        }
         .card-actions button.edit {
             background-color: #ffc107;
         }
@@ -73,45 +70,138 @@
             display: block;
             margin: 0 auto 20px;
         }
+        .controls {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .controls input, .controls select {
+            padding: 8px;
+            margin: 0 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .pagination button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            margin: 0 5px;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>Habit and Goal Tracker</h1>
+    <h1>Habit, Goal, and Achievement Tracker</h1>
 
-    <div class="section" id="habits-section">
-        <h2>Habits</h2>
-        <button class="add-button" onclick="addHabit()">Add Habit</button>
-        <div id="habits-container">
-
+    <!-- Email Sending Section -->
+    <div class="section" id="email-section">
+        <h2>Send Email</h2>
+        <div class="controls">
+            <input type="text" id="email-recipients" placeholder="Recipients (comma-separated)">
+            <input type="text" id="email-subject" placeholder="Subject">
+            <textarea id="email-body" placeholder="Email body" rows="5"></textarea>
         </div>
+        <button class="add-button" onclick="sendEmail()">Send Email</button>
     </div>
 
-    <div class="section" id="goals-section">
-        <h2>Goals</h2>
-        <button class="add-button" onclick="addGoal()">Add Goal</button>
-        <div id="goals-container">
 
-        </div>
-    </div>
-
-    <div class="section" id="achievements-section">
-        <h2>Achievements</h2>
-        <button class="add-button" onclick="addAchievement()">Add Achievement</button>
-        <div id="achievements-container">
-
-        </div>
-    </div>
-
+    <!-- Notifications Section -->
     <div class="section" id="notifications-section">
         <h2>Notifications</h2>
+        <div class="controls">
+            <input type="text" id="notification-filter" placeholder="Filter notifications">
+            <select id="notification-sort">
+                <option value="">Sort By</option>
+                <option value="message">Message</option>
+                <option value="scheduled_at">Scheduled Date</option>
+            </select>
+            <button onclick="applyNotificationFilterSort()">Apply</button>
+        </div>
         <button class="add-button" onclick="addNotification()">Add Notification</button>
+        <div id="notifications-container"></div>
+        <div class="pagination" id="notifications-pagination">
+            <button onclick="prevNotificationPage()">Previous</button>
+            <button onclick="nextNotificationPage()">Next</button>
+        </div>
+    </div>
 
-        <div id="notifications-container">
+    <!-- Habits Section -->
+    <div class="section" id="habits-section">
+        <h2>Habits</h2>
+        <div class="controls">
+            <input type="text" id="habit-filter" placeholder="Filter habits">
+            <select id="habit-sort">
+                <option value="">Sort By</option>
+                <option value="name">Name</option>
+            </select>
+            <button onclick="applyHabitFilterSort()">Apply</button>
+        </div>
+        <button class="add-button" onclick="addHabit()">Add Habit</button>
+        <div id="habits-container"></div>
+        <div class="pagination" id="habits-pagination">
+            <button onclick="prevHabitPage()">Previous</button>
+            <button onclick="nextHabitPage()">Next</button>
+        </div>
+    </div>
 
+    <!-- Goals Section -->
+    <div class="section" id="goals-section">
+        <h2>Goals</h2>
+        <div class="controls">
+            <input type="text" id="goal-filter" placeholder="Filter goals">
+            <select id="goal-sort">
+                <option value="">Sort By</option>
+                <option value="name">Name</option>
+                <option value="deadline">Deadline</option>
+            </select>
+            <button onclick="applyGoalFilterSort()">Apply</button>
+        </div>
+        <button class="add-button" onclick="addGoal()">Add Goal</button>
+        <div id="goals-container"></div>
+        <div class="pagination" id="goals-pagination">
+            <button onclick="prevGoalPage()">Previous</button>
+            <button onclick="nextGoalPage()">Next</button>
+        </div>
+    </div>
+
+    <!-- Achievements Section -->
+    <div class="section" id="achievements-section">
+        <h2>Achievements</h2>
+        <div class="controls">
+            <input type="text" id="achievement-filter" placeholder="Filter achievements">
+            <select id="achievement-sort">
+                <option value="">Sort By</option>
+                <option value="title">Title</option>
+                <option value="date">Date</option>
+            </select>
+            <button onclick="applyAchievementFilterSort()">Apply</button>
+        </div>
+        <button class="add-button" onclick="addAchievement()">Add Achievement</button>
+        <div id="achievements-container"></div>
+        <div class="pagination" id="achievements-pagination">
+            <button onclick="prevAchievementPage()">Previous</button>
+            <button onclick="nextAchievementPage()">Next</button>
         </div>
     </div>
 </div>
+<script src="notifications.js"></script>
+<script src="habits.js"></script>
+<script src="goals.js"></script>
+<script src="achievements.js"></script>
 <script src="script.js"></script>
+<script>
+    window.onload = function () {
+        getNotifications();
+        getHabits();
+        getGoals();
+        getAchievements();
+    };
+</script>
 </body>
 </html>
