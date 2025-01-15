@@ -93,6 +93,16 @@
             color: white;
             margin: 0 5px;
         }
+        .success-icon {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .success-icon img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
     </style>
 </head>
 <body>
@@ -105,11 +115,19 @@
         <div class="controls">
             <input type="text" id="email-recipients" placeholder="Recipients (comma-separated)">
             <input type="text" id="email-subject" placeholder="Subject">
+            <input type="file" id="email-attachment" name="attachment">
             <textarea id="email-body" placeholder="Email body" rows="5"></textarea>
+
         </div>
         <button class="add-button" onclick="sendEmail()">Send Email</button>
-    </div>
+        <div class="success-icon" id="success-icon">
+            <img src="message-sending.png"></img>
 
+
+            <p>Email sent successfully!</p>
+        </div>
+
+    </div>
 
     <!-- Notifications Section -->
     <div class="section" id="notifications-section">
@@ -196,12 +214,43 @@
 <script src="achievements.js"></script>
 <script src="script.js"></script>
 <script>
-    window.onload = function () {
-        getNotifications();
-        getHabits();
-        getGoals();
-        getAchievements();
-    };
+    async function sendEmail() {
+        const recipients = document.getElementById('email-recipients').value;
+        const subject = document.getElementById('email-subject').value;
+        const body = document.getElementById('email-body').value;
+
+        if (!recipients || !subject || !body) {
+            alert('All fields are required!');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8080/api/admin/send-mass-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    emails: recipients.split(','),
+                    subject: subject,
+                    body: body
+                }),
+            });
+
+            if (response.ok) {
+                alert('Email sent successfully!');
+                document.getElementById('email-recipients').value = '';
+                document.getElementById('email-subject').value = '';
+                document.getElementById('email-body').value = '';
+                document.getElementById('success-icon').style.display = 'block';
+            } else {
+                const errorText = await response.text();
+                console.error('Error sending email:', errorText);
+                alert('Failed to send email.');
+            }
+        } catch (error) {
+            console.error('Unexpected error:', error);
+            alert('Unexpected error occurred.');
+        }
+    }
 </script>
 </body>
 </html>

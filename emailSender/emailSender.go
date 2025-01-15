@@ -2,6 +2,7 @@ package emailSender
 
 import (
 	"gopkg.in/gomail.v2"
+	"io"
 	"log"
 	"os"
 	"strconv"
@@ -47,5 +48,31 @@ func (e *EmailSender) SendEmail(to []string, subject, body string) error {
 	if err := d.DialAndSend(m); err != nil {
 		return err
 	}
+	return nil
+}
+
+// SendEmailWithAttachment отправляет email с вложением
+func (e *EmailSender) SendEmailWithAttachment(to []string, subject, body, fileName string, fileData []byte) error {
+	m := gomail.NewMessage()
+	m.SetHeader("From", e.Username)
+	m.SetHeader("To", to...)
+	m.SetHeader("Subject", subject)
+	m.SetBody("text/html", body)
+
+	if len(fileData) > 0 && fileName != "" {
+		m.Attach(fileName, gomail.SetCopyFunc(func(w io.Writer) error {
+			_, err := w.Write(fileData)
+			return err
+		}))
+	}
+
+	d := gomail.NewDialer(e.Host, e.Port, e.Username, e.Password)
+
+	if err := d.DialAndSend(m); err != nil {
+		log.Printf("Failed to send email: %v", err) // Лог ошибки
+		return err
+	}
+
+	log.Printf("Email successfully sent to: %v", to) // Лог успешной отправки
 	return nil
 }

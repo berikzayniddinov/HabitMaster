@@ -1,0 +1,319 @@
+ {"level":"info","msg":"Инициализация сервера","time":"2025-01-09T14:46:49+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-09T14:46:49+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-09T14:46:49+05:00"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-09T18:48:31+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-09T18:48:31+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-09T18:48:31+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61295","time":"2025-01-09T18:48:49+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61295","time":"2025-01-09T18:48:49+05:00","url":"/notifications.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61296","time":"2025-01-09T18:48:49+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61297","time":"2025-01-09T18:48:49+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61297","time":"2025-01-09T18:48:49+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61297","time":"2025-01-09T18:48:49+05:00","url":"/script.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61297","time":"2025-01-09T18:48:49+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61296","time":"2025-01-09T18:48:49+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61295","time":"2025-01-09T18:48:49+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61298","time":"2025-01-09T18:48:49+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61299","time":"2025-01-09T18:48:49+05:00","url":"/favicon.ico"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61297","time":"2025-01-09T18:48:49+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61295","time":"2025-01-09T18:48:53+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=2"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61295","time":"2025-01-09T18:48:56+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=2"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61295","time":"2025-01-09T18:49:01+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61295","time":"2025-01-09T18:49:03+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61295","time":"2025-01-09T18:49:11+05:00","url":"/api/notifications?filter=%D0%A3%D0%B2%D0%B5%D0%B4%D0%BE%D0%BC%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5%207\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61295","time":"2025-01-09T18:49:15+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61295","time":"2025-01-09T18:49:18+05:00","url":"/api/notifications?filter=\u0026sort=scheduled_at\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61295","time":"2025-01-09T18:49:19+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61295","time":"2025-01-09T18:49:21+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:00:07+05:00","url":"/api/notifications?filter=%D0%A3%D0%B2%D0%B5%D0%B4%D0%BE%D0%BC%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5%207\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:00:13+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:00:16+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:00:26+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=2"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:00:28+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:00:36+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=2"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:00:43+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:01:57+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:03:53+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:03:54+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:03:54+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:03:54+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:03:54+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:03:54+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:04:18+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:04:19+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:04:22+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:04:22+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:04:22+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:04:23+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:04:23+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61351","time":"2025-01-09T19:04:23+05:00","url":"/api/notifications?filter=\u0026sort=message\u0026page=1"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-09T19:06:18+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-09T19:06:18+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-09T19:06:18+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61390","time":"2025-01-09T19:06:27+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61390","time":"2025-01-09T19:06:27+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61391","time":"2025-01-09T19:06:27+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61393","time":"2025-01-09T19:06:27+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61393","time":"2025-01-09T19:06:27+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61391","time":"2025-01-09T19:06:27+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61390","time":"2025-01-09T19:06:27+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61394","time":"2025-01-09T19:06:27+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61393","time":"2025-01-09T19:06:27+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61394","time":"2025-01-09T19:06:46+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61394","time":"2025-01-09T19:06:46+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61393","time":"2025-01-09T19:06:46+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61390","time":"2025-01-09T19:06:46+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61390","time":"2025-01-09T19:06:46+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61393","time":"2025-01-09T19:06:46+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61394","time":"2025-01-09T19:06:46+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61390","time":"2025-01-09T19:06:46+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:61391","time":"2025-01-09T19:06:46+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-10T14:53:56+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-10T14:53:56+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-10T14:53:56+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:51221","time":"2025-01-10T14:54:15+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:51221","time":"2025-01-10T14:54:15+05:00","url":"/notifications.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:51223","time":"2025-01-10T14:54:15+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:51222","time":"2025-01-10T14:54:15+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:51222","time":"2025-01-10T14:54:15+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:51223","time":"2025-01-10T14:54:15+05:00","url":"/script.js"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-10T15:04:48+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-10T15:04:48+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-10T15:04:48+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52291","time":"2025-01-10T15:05:03+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52291","time":"2025-01-10T15:05:03+05:00","url":"/success-icon.png"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52292","time":"2025-01-10T15:05:03+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52293","time":"2025-01-10T15:05:03+05:00","url":"/notifications.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52294","time":"2025-01-10T15:05:03+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52296","time":"2025-01-10T15:05:03+05:00","url":"/script.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52295","time":"2025-01-10T15:05:03+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52296","time":"2025-01-10T15:05:03+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52296","time":"2025-01-10T15:05:03+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52292","time":"2025-01-10T15:05:03+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52295","time":"2025-01-10T15:05:03+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52294","time":"2025-01-10T15:05:03+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52294","time":"2025-01-10T15:05:12+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52294","time":"2025-01-10T15:05:12+05:00","url":"/success-icon.png"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52294","time":"2025-01-10T15:05:12+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52295","time":"2025-01-10T15:05:12+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52292","time":"2025-01-10T15:05:12+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52295","time":"2025-01-10T15:05:12+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52295","time":"2025-01-10T15:05:12+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52295","time":"2025-01-10T15:05:12+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52292","time":"2025-01-10T15:05:12+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52292","time":"2025-01-10T15:05:12+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:52292","time":"2025-01-10T15:05:42+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-10T15:09:12+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-10T15:09:12+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-10T15:09:12+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52351","time":"2025-01-10T15:09:25+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52351","time":"2025-01-10T15:09:26+05:00","url":"/message-sending.png"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52352","time":"2025-01-10T15:09:26+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52353","time":"2025-01-10T15:09:26+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52354","time":"2025-01-10T15:09:26+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52355","time":"2025-01-10T15:09:26+05:00","url":"/script.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52354","time":"2025-01-10T15:09:26+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52353","time":"2025-01-10T15:09:26+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52355","time":"2025-01-10T15:09:26+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52354","time":"2025-01-10T15:09:26+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52355","time":"2025-01-10T15:09:26+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:52355","time":"2025-01-10T15:09:46+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-10T15:10:39+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-10T15:10:39+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-10T15:10:39+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52360","time":"2025-01-10T15:10:48+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52360","time":"2025-01-10T15:10:48+05:00","url":"/message-sending.png"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52360","time":"2025-01-10T15:10:48+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52361","time":"2025-01-10T15:10:48+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52362","time":"2025-01-10T15:10:48+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52363","time":"2025-01-10T15:10:48+05:00","url":"/script.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52362","time":"2025-01-10T15:10:48+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52363","time":"2025-01-10T15:10:48+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52362","time":"2025-01-10T15:10:48+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52361","time":"2025-01-10T15:10:48+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52360","time":"2025-01-10T15:10:48+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:52360","time":"2025-01-10T15:11:08+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-10T15:12:30+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-10T15:12:30+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-10T15:12:30+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52388","time":"2025-01-10T15:12:40+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52388","time":"2025-01-10T15:12:40+05:00","url":"/message-sending.png"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52389","time":"2025-01-10T15:12:40+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52390","time":"2025-01-10T15:12:40+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52392","time":"2025-01-10T15:12:40+05:00","url":"/script.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52391","time":"2025-01-10T15:12:40+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52392","time":"2025-01-10T15:12:40+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52391","time":"2025-01-10T15:12:40+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52392","time":"2025-01-10T15:12:40+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52390","time":"2025-01-10T15:12:40+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52389","time":"2025-01-10T15:12:40+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:52389","time":"2025-01-10T15:13:01+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-10T15:20:03+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-10T15:20:03+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-10T15:20:03+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52464","time":"2025-01-10T15:20:12+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52464","time":"2025-01-10T15:20:12+05:00","url":"/message-sending.png"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52464","time":"2025-01-10T15:20:12+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52465","time":"2025-01-10T15:20:12+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52466","time":"2025-01-10T15:20:12+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52467","time":"2025-01-10T15:20:12+05:00","url":"/script.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52467","time":"2025-01-10T15:20:12+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52467","time":"2025-01-10T15:20:12+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52466","time":"2025-01-10T15:20:12+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52465","time":"2025-01-10T15:20:12+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52464","time":"2025-01-10T15:20:12+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:52464","time":"2025-01-10T15:20:33+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-10T15:26:44+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-10T15:26:44+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-10T15:26:44+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52548","time":"2025-01-10T15:26:54+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52548","time":"2025-01-10T15:26:54+05:00","url":"/message-sending.jpg"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52548","time":"2025-01-10T15:26:54+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52549","time":"2025-01-10T15:26:54+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52550","time":"2025-01-10T15:26:54+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52551","time":"2025-01-10T15:26:54+05:00","url":"/script.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52550","time":"2025-01-10T15:26:54+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52551","time":"2025-01-10T15:26:54+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52549","time":"2025-01-10T15:26:54+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52548","time":"2025-01-10T15:26:54+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52550","time":"2025-01-10T15:26:54+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:52550","time":"2025-01-10T15:27:13+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-10T15:29:44+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-10T15:29:44+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-10T15:29:44+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52614","time":"2025-01-10T15:29:55+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52614","time":"2025-01-10T15:29:55+05:00","url":"/habittracker/message-sending.jpg"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52615","time":"2025-01-10T15:29:55+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52616","time":"2025-01-10T15:29:55+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52617","time":"2025-01-10T15:29:55+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52618","time":"2025-01-10T15:29:55+05:00","url":"/script.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52616","time":"2025-01-10T15:29:55+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52618","time":"2025-01-10T15:29:55+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52617","time":"2025-01-10T15:29:55+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52615","time":"2025-01-10T15:29:55+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:52616","time":"2025-01-10T15:29:55+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:52616","time":"2025-01-10T15:30:15+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-10T15:35:49+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-10T15:35:49+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-10T15:35:49+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53017","time":"2025-01-10T15:35:57+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53018","time":"2025-01-10T15:35:57+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53017","time":"2025-01-10T15:35:57+05:00","url":"/message-sending.jpg"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53019","time":"2025-01-10T15:35:57+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53021","time":"2025-01-10T15:35:57+05:00","url":"/script.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53020","time":"2025-01-10T15:35:57+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53020","time":"2025-01-10T15:35:57+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53019","time":"2025-01-10T15:35:57+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53021","time":"2025-01-10T15:35:57+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53018","time":"2025-01-10T15:35:58+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53020","time":"2025-01-10T15:35:58+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:53020","time":"2025-01-10T15:36:19+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-10T15:41:47+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-10T15:41:47+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-10T15:41:47+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53101","time":"2025-01-10T15:41:58+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53101","time":"2025-01-10T15:41:59+05:00","url":"/message-sending.png"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53102","time":"2025-01-10T15:41:59+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53103","time":"2025-01-10T15:41:59+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53105","time":"2025-01-10T15:41:59+05:00","url":"/script.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53104","time":"2025-01-10T15:41:59+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53105","time":"2025-01-10T15:41:59+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53105","time":"2025-01-10T15:41:59+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53103","time":"2025-01-10T15:41:59+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53104","time":"2025-01-10T15:41:59+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53102","time":"2025-01-10T15:41:59+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:53102","time":"2025-01-10T15:42:18+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-10T15:47:55+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-10T15:47:55+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-10T15:47:55+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53191","time":"2025-01-10T15:48:07+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53191","time":"2025-01-10T15:48:07+05:00","url":"/message-sending.png"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53192","time":"2025-01-10T15:48:07+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53194","time":"2025-01-10T15:48:07+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53193","time":"2025-01-10T15:48:07+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53195","time":"2025-01-10T15:48:07+05:00","url":"/script.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53193","time":"2025-01-10T15:48:07+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53194","time":"2025-01-10T15:48:07+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53193","time":"2025-01-10T15:48:07+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53195","time":"2025-01-10T15:48:07+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53192","time":"2025-01-10T15:48:07+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:53192","time":"2025-01-10T15:48:28+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-10T15:50:10+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-10T15:50:10+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-10T15:50:10+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53275","time":"2025-01-10T15:50:19+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53275","time":"2025-01-10T15:50:19+05:00","url":"/message-sending.png"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53276","time":"2025-01-10T15:50:19+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53277","time":"2025-01-10T15:50:19+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53278","time":"2025-01-10T15:50:19+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53279","time":"2025-01-10T15:50:19+05:00","url":"/script.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53278","time":"2025-01-10T15:50:19+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53278","time":"2025-01-10T15:50:19+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53277","time":"2025-01-10T15:50:19+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53279","time":"2025-01-10T15:50:19+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:53276","time":"2025-01-10T15:50:19+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:53276","time":"2025-01-10T15:50:44+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-10T21:12:08+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-10T21:12:08+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-10T21:12:08+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58740","time":"2025-01-10T21:12:26+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58740","time":"2025-01-10T21:12:26+05:00","url":"/message-sending.png"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58740","time":"2025-01-10T21:12:26+05:00","url":"/notifications.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58741","time":"2025-01-10T21:12:26+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58742","time":"2025-01-10T21:12:26+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58743","time":"2025-01-10T21:12:26+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58744","time":"2025-01-10T21:12:26+05:00","url":"/script.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58744","time":"2025-01-10T21:12:26+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58744","time":"2025-01-10T21:12:26+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58743","time":"2025-01-10T21:12:26+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58742","time":"2025-01-10T21:12:26+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58741","time":"2025-01-10T21:12:26+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:58741","time":"2025-01-10T21:13:03+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:58782","time":"2025-01-10T21:17:38+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-10T21:36:03+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-10T21:36:03+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-10T21:36:03+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58912","time":"2025-01-10T21:36:17+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58912","time":"2025-01-10T21:36:17+05:00","url":"/message-sending.png"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58913","time":"2025-01-10T21:36:17+05:00","url":"/notifications.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58914","time":"2025-01-10T21:36:17+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58916","time":"2025-01-10T21:36:17+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58915","time":"2025-01-10T21:36:17+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58917","time":"2025-01-10T21:36:17+05:00","url":"/script.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58917","time":"2025-01-10T21:36:17+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58913","time":"2025-01-10T21:36:17+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58914","time":"2025-01-10T21:36:17+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58917","time":"2025-01-10T21:36:17+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58915","time":"2025-01-10T21:36:17+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:58915","time":"2025-01-10T21:36:46+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:58915","time":"2025-01-10T21:38:22+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-10T21:43:00+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-10T21:43:00+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-10T21:43:00+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58947","time":"2025-01-10T21:43:18+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58947","time":"2025-01-10T21:43:18+05:00","url":"/message-sending.png"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58947","time":"2025-01-10T21:43:18+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58948","time":"2025-01-10T21:43:18+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58950","time":"2025-01-10T21:43:18+05:00","url":"/script.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58949","time":"2025-01-10T21:43:18+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58949","time":"2025-01-10T21:43:18+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58949","time":"2025-01-10T21:43:18+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58948","time":"2025-01-10T21:43:18+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58948","time":"2025-01-10T21:43:18+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:58949","time":"2025-01-10T21:43:18+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:58949","time":"2025-01-10T21:43:40+05:00","url":"/api/admin/send-mass-email"}
+{"level":"info","msg":"Инициализация сервера","time":"2025-01-10T21:53:03+05:00"}
+{"level":"info","msg":"Успешное подключение к базе данных","time":"2025-01-10T21:53:03+05:00"}
+{"level":"info","msg":"Сервер запущен на порту 8080","time":"2025-01-10T21:53:03+05:00"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:59082","time":"2025-01-10T21:53:20+05:00","url":"/main.html"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:59082","time":"2025-01-10T21:53:20+05:00","url":"/message-sending.png"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:59083","time":"2025-01-10T21:53:20+05:00","url":"/habits.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:59085","time":"2025-01-10T21:53:20+05:00","url":"/achievements.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:59086","time":"2025-01-10T21:53:20+05:00","url":"/script.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:59084","time":"2025-01-10T21:53:20+05:00","url":"/goals.js"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:59086","time":"2025-01-10T21:53:20+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:59086","time":"2025-01-10T21:53:20+05:00","url":"/api/goals?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:59084","time":"2025-01-10T21:53:20+05:00","url":"/api/habits?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:59085","time":"2025-01-10T21:53:20+05:00","url":"/api/achievements?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"GET","msg":"Получен запрос","remote":"[::1]:59083","time":"2025-01-10T21:53:20+05:00","url":"/api/notifications?filter=\u0026sort=\u0026page=1"}
+{"level":"info","method":"POST","msg":"Получен запрос","remote":"[::1]:59083","time":"2025-01-10T21:53:41+05:00","url":"/api/admin/send-mass-email"}

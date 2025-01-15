@@ -27,7 +27,7 @@ func getLimiter(ip string) *rate.Limiter {
 		return limiter
 	}
 
-	limiter := rate.NewLimiter(1, 5) // 1 запрос в секунду, burst до 5
+	limiter := rate.NewLimiter(1, 1) // 1 запрос в секунду, burst до 5
 	clients[ip] = limiter
 	return limiter
 }
@@ -48,10 +48,17 @@ func rateLimiterMiddleware(next http.Handler) http.Handler {
 }
 
 func main() {
+	// Создаем лог-файл
+	logFile, err := os.OpenFile("server_logs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		logrus.Fatalf("Failed to open log file: %v", err)
+	}
+	defer logFile.Close()
+
 	// Настройка логирования
 	log := logrus.New()
 	log.SetFormatter(&logrus.JSONFormatter{})
-	log.SetOutput(os.Stdout)
+	log.SetOutput(logFile) // Перенаправляем вывод логов в файл
 
 	log.Info("Инициализация сервера")
 
@@ -122,6 +129,7 @@ func main() {
 	// Маршруты для отправки email
 	r.HandleFunc("/api/admin/send-mass-email", handlers.SendMassEmailHandler(emailService)).Methods("POST")
 	r.HandleFunc("/api/user/send-support-email", handlers.SendSupportEmailHandler(emailService)).Methods("POST")
+	r.HandleFunc("/api/admin/send-email-with-attachment", handlers.SendEmailWithAttachmentHandler(emailService)).Methods("POST")
 
 	// Раздача статических файлов
 	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("./habittracker"))))

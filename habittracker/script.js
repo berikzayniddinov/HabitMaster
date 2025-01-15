@@ -734,28 +734,27 @@ async function sendEmail() {
     const recipients = document.getElementById('email-recipients').value;
     const subject = document.getElementById('email-subject').value;
     const body = document.getElementById('email-body').value;
+    const attachment = document.getElementById('email-attachment').files[0];
 
     if (!recipients || !subject || !body) {
         alert('All fields are required!');
         return;
     }
 
-    // Логируем данные для отладки
-    console.log({
-        emails: recipients.split(','), // Убедитесь, что здесь корректные email
-        subject: subject,
-        body: body
-    });
+    const formData = new FormData();
+    formData.append('recipients', recipients);
+    formData.append('subject', subject);
+    formData.append('body', body);
+    if (attachment) {
+        formData.append('attachment', attachment);
+    }
+    console.log([...formData.entries()]);
+
 
     try {
         const response = await fetch('http://localhost:8080/api/admin/send-mass-email', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                emails: recipients.split(','), // Изменено на emails
-                subject: subject,
-                body: body
-            }),
+            body: formData, // Передача данных через FormData
         });
 
         if (response.ok) {
@@ -763,6 +762,7 @@ async function sendEmail() {
             document.getElementById('email-recipients').value = '';
             document.getElementById('email-subject').value = '';
             document.getElementById('email-body').value = '';
+            document.getElementById('email-attachment').value = '';
         } else {
             const errorText = await response.text();
             console.error('Error sending email:', errorText);
@@ -773,3 +773,7 @@ async function sendEmail() {
         alert('Unexpected error occurred.');
     }
 }
+
+
+
+
