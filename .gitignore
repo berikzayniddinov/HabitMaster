@@ -1,0 +1,65 @@
+# Go-specific ignores
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Dependency directories
+vendor/
+node_modules/
+
+# IDE and Editor-specific ignores
+.idea/
+.vscode/
+*.swp
+*.swo
+*.tmp
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Log files
+logs/
+*.log
+server_logs.txt
+
+# Environment files
+.env
+.env.local
+.env.*
+
+# Docker-related ignores
+docker-compose.override.yml
+*.docker
+*.dockerfile
+
+# Build artifacts and directories
+bin/
+obj/
+out/
+dist/
+*.o
+*.a
+*.pyc
+*.pyo
+
+# Compiled code cache
+*.swp
+*.temp
+*.tmp
+*.old
+*.bak
+*.tar.gz
+
+# Test-related files
+coverage.out
+
+# Git-specific ignores
+.git/
+*.lock

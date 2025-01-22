@@ -773,6 +773,250 @@ async function sendEmail() {
         alert('Unexpected error occurred.');
     }
 }
+document.addEventListener('DOMContentLoaded', () => {
+    const registrationForm = document.getElementById('registration-form');
+    const getUsersButton = document.getElementById('get-users');
+    const userList = document.getElementById('user-list');
+
+    // Функция отображения секции профиля
+    function showProfileSection(user) {
+        const profileSection = document.getElementById('profile-section');
+        const profileNameDisplay = document.getElementById('profile-name-display');
+        const profileImage = document.getElementById('profile-image');
+
+        if (profileSection) {
+            profileSection.style.display = 'block';
+            if (profileNameDisplay) {
+                profileNameDisplay.textContent = user.name || "Anonymous"; // Отображение имени
+            }
+            if (profileImage) {
+                profileImage.src = user.profile_picture || 'default-profile.png'; // Установка фото профиля
+            }
+        }
+    }
+
+    // Обработчик отправки формы регистрации
+    if (registrationForm) {
+        registrationForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Предотвращаем перезагрузку страницы
+
+            // Получаем данные из формы
+            const formData = new FormData(registrationForm);
+            const userData = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+            };
+
+            console.log('Registration data:', userData); // Для проверки
+
+            try {
+                // Отправляем данные на сервер
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData),
+                });
+
+                console.log('Response:', response); // Проверяем ответ сервера
+
+                // Обрабатываем ответ сервера
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Server result:', result); // Для проверки
+                    localStorage.setItem("authToken", result.token); // Сохраняем токен
+                    alert(result.message); // Сообщение об успехе
+                    registrationForm.reset(); // Очищаем форму
+                    window.location.href = 'main.html'; // Переход на главную страницу
+                } else {
+                    const error = await response.text();
+                    alert(`Ошибка: ${error}`);
+                }
+            } catch (err) {
+                console.error('Ошибка при регистрации:', err);
+                alert('Произошла ошибка при регистрации');
+            }
+        });
+    }
+
+    // Обработчик для кнопки "Получить пользователей"
+    if (getUsersButton) {
+        getUsersButton.addEventListener('click', async () => {
+            try {
+                // Запрашиваем список пользователей
+                const response = await fetch('/api/get-users');
+                if (response.ok) {
+                    const users = await response.json();
+
+                    // Очищаем список
+                    if (userList) {
+                        userList.innerHTML = '';
+                    }
+
+                    // Добавляем пользователей в список
+                    users.forEach((user) => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `ID: ${user.user_id}, Имя: ${user.name}, Email: ${user.email}`;
+                        userList.appendChild(listItem);
+                    });
+                } else {
+                    const error = await response.text();
+                    alert(`Ошибка: ${error}`);
+                }
+            } catch (err) {
+                console.error('Ошибка при получении пользователей:', err);
+                alert('Произошла ошибка при получении пользователей');
+            }
+        });
+    }
+});
+
+const apiBase = "http://localhost:8080";
+let authToken = localStorage.getItem("authToken"); // Храните токен в localStorage после авторизации
+
+// Загрузка профиля пользователя
+async function loadUserProfile() {
+    try {
+        const response = await fetch(`${apiBase}/profile`, {
+            headers: {
+                "Authorization": `Bearer ${authToken}`,
+            },
+        });
+
+        console.log('Profile response:', response); // Для проверки
+
+        if (!response.ok) {
+            throw new Error("Failed to load profile");
+        }
+
+        const user = await response.json();
+        const profileName = document.getElementById("profile-name");
+        const profileEmail = document.getElementById("profile-email");
+        const profileImage = document.getElementById("profile-image");
+
+        if (profileName) profileName.value = user.name || "";
+        if (profileEmail) profileEmail.value = user.email || "";
+        if (profileImage) profileImage.src = user.profile_picture || "default-profile.png";
+        showProfileSection(user); // Показываем секцию профиля
+    } catch (error) {
+        console.error(error.message);
+        alert("Please log in to access your profile.");
+    }
+}
+
+// Обновление профиля
+const profileForm = document.getElementById("profile-form");
+if (profileForm) {
+    profileForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const name = document.getElementById("profile-name")?.value;
+        const email = document.getElementById("profile-email")?.value;
+
+        try {
+            const response = await fetch(`${apiBase}/profile/update`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${authToken}`,
+                },
+                body: JSON.stringify({ name, email }),
+            });
+
+            console.log('Profile update response:', response); // Для проверки
+
+            if (!response.ok) {
+                throw new Error("Failed to update profile");
+            }
+
+            alert("Profile updated successfully");
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+}
+
+// Смена пароля
+const passwordForm = document.getElementById("password-form");
+if (passwordForm) {
+    passwordForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const oldPassword = document.getElementById("old-password")?.value;
+        const newPassword = document.getElementById("new-password")?.value;
+
+        try {
+            const response = await fetch(`${apiBase}/profile/password`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${authToken}`,
+                },
+                body: JSON.stringify({ old_password: oldPassword, new_password: newPassword }),
+            });
+
+            console.log('Password change response:', response); // Для проверки
+
+            if (!response.ok) {
+                throw new Error("Failed to change password");
+            }
+
+            alert("Password changed successfully");
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+}
+
+// Загрузка фотографии профиля
+const pictureForm = document.getElementById("picture-form");
+if (pictureForm) {
+    pictureForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const fileInput = document.getElementById("profile-picture");
+        const file = fileInput?.files[0];
+
+        if (!file) {
+            alert("Please select a file");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("profile_picture", file);
+
+        try {
+            const response = await fetch(`${apiBase}/profile/picture`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${authToken}`,
+                },
+                body: formData,
+            });
+
+            console.log('Profile picture upload response:', response); // Для проверки
+
+            if (!response.ok) {
+                throw new Error("Failed to upload picture");
+            }
+
+            alert("Profile picture uploaded successfully");
+            loadUserProfile();
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+}
+
+// Загружаем профиль при открытии страницы
+if (document.getElementById("profile-form")) {
+    loadUserProfile();
+}
+
+
+
+
+
+
 
 
 

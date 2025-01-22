@@ -106,6 +106,58 @@
     </style>
 </head>
 <body>
+<header>
+    <h1>Welcome to HabitMaster!</h1>
+    <p>Your habit and goal tracking tool.</p>
+    <nav>
+        <a href="login.html">Login</a> | <a href="register.html">Register</a>
+    </nav>
+</header>
+
+<!-- Users Section -->
+<div class="section" id="users-section">
+    <h2>Users</h2>
+    <button id="get-users">Get Users</button>
+    <ul id="user-list"></ul>
+</div>
+
+<!-- Profile Section -->
+<div id="profile-section" style="display: none;">
+    <h2>User Profile</h2>
+    <div id="profile-icon">
+        <img id="profile-image" src="default-profile.png" alt="Profile Picture" width="100">
+        <p id="profile-name-display"></p>
+    </div>
+    <form id="profile-form">
+        <label for="profile-name">Name:</label>
+        <input type="text" id="profile-name">
+        <br>
+        <label for="profile-email">Email:</label>
+        <input type="email" id="profile-email">
+        <br>
+        <button type="submit">Update Profile</button>
+    </form>
+
+    <h3>Change Password</h3>
+    <form id="password-form">
+        <label for="old-password">Old Password:</label>
+        <input type="password" id="old-password">
+        <br>
+        <label for="new-password">New Password:</label>
+        <input type="password" id="new-password">
+        <br>
+        <button type="submit">Change Password</button>
+    </form>
+
+    <h3>Profile Picture</h3>
+    <form id="picture-form">
+        <input type="file" id="profile-picture" accept="image/*">
+        <br>
+        <button type="submit">Upload Picture</button>
+    </form>
+    <img id="profile-image-main" alt="Profile Picture">
+</div>
+
 <div class="container">
     <h1>Habit, Goal, and Achievement Tracker</h1>
 
@@ -214,6 +266,57 @@
 <script src="achievements.js"></script>
 <script src="script.js"></script>
 <script>
+    document.getElementById('registration-form').addEventListener('submit', async (event) => {
+        event.preventDefault(); // Останавливаем отправку формы по умолчанию
+
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        if (!name || !email || !password) {
+            alert('All fields are required!');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, email, password }),
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                alert(result.message);
+                document.getElementById('registration-form').reset();
+            } else {
+                const errorText = await response.text();
+                alert(`Error: ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Unexpected error:', error);
+            alert('An unexpected error occurred.');
+        }
+    });
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("login-email").value;
+        const password = document.getElementById("login-password").value;
+
+        const response = await fetch("http://localhost:8080/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+        alert(data.message || "Login failed");
+    });
+
     async function sendEmail() {
         const recipients = document.getElementById('email-recipients').value;
         const subject = document.getElementById('email-subject').value;
@@ -252,5 +355,8 @@
         }
     }
 </script>
+<footer>
+    <p>&copy; 2025 HabitMaster. All rights reserved.</p>
+</footer>
 </body>
 </html>

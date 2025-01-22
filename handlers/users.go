@@ -4,6 +4,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+	"strings"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // User - структура для пользователя с полем user_id вместо id
@@ -37,10 +40,32 @@ func CreateUser(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
+		// Приведение email к нижнему регистру
+		user.Email = strings.ToLower(user.Email)
+
+		// Проверка на существующий email
+		var exists bool
+		err := db.QueryRow("SELECT EXISTS (SELECT 1 FROM users WHERE email = $1)", user.Email).Scan(&exists)
+		if err != nil {
+			http.Error(w, "Ошибка сервера", http.StatusInternalServerError)
+			return
+		}
+		if exists {
+			http.Error(w, "Пользователь с таким email уже существует", http.StatusConflict)
+			return
+		}
+
+		// Хэширование пароля
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+		if err != nil {
+			http.Error(w, "Ошибка сервера", http.StatusInternalServerError)
+			return
+		}
+
 		// SQL-запрос для вставки данных
 		query := `INSERT INTO users (name, email, password, created_at, updated_at) 
 		          VALUES ($1, $2, $3, NOW(), NOW())`
-		_, err := db.Exec(query, user.Name, user.Email, user.Password)
+		_, err = db.Exec(query, user.Name, user.Email, string(hashedPassword))
 		if err != nil {
 			http.Error(w, "Ошибка при добавлении пользователя в базу данных", http.StatusInternalServerError)
 			return
@@ -77,6 +102,12 @@ func GetUsers(db *sql.DB) http.HandlerFunc {
 				return
 			}
 			users = append(users, user)
+		}
+
+		// Проверка ошибок после итерации
+		if err = rows.Err(); err != nil {
+			http.Error(w, "Ошибка при чтении данных из базы данных", http.StatusInternalServerError)
+			return
 		}
 
 		// Возвращаем список пользователей в формате JSON

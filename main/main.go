@@ -4,6 +4,8 @@ import (
 	"HabitMaster/databaseConnector"
 	"HabitMaster/emailSender"
 	"HabitMaster/handlers"
+	"context"
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/time/rate"
@@ -45,6 +47,35 @@ func rateLimiterMiddleware(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+// AuthMiddleware добавляет user_id в контекст из токена
+func AuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token := r.Header.Get("Authorization")
+		if token == "" {
+			http.Error(w, "Missing token", http.StatusUnauthorized)
+			return
+		}
+
+		// Пример декодирования токена
+		userID, err := DecodeTokenAndGetUserID(token)
+		if err != nil {
+			http.Error(w, "Invalid token", http.StatusUnauthorized)
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), "user_id", userID)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+// DecodeTokenAndGetUserID заглушка декодирования токена
+func DecodeTokenAndGetUserID(token string) (int, error) {
+	if token == "valid-token" {
+		return 1, nil
+	}
+	return 0, fmt.Errorf("invalid token")
 }
 
 func main() {
@@ -92,6 +123,22 @@ func main() {
 
 	// Применяем middleware для ограничения запросов
 	r.Use(rateLimiterMiddleware)
+
+	// Определяем маршруты для профиля пользователя
+
+	r.Handle("/api/profile", AuthMiddleware(http.HandlerFunc(handlers.GetUserProfile(db)))).Methods("GET")                    // Получение профиля
+	r.Handle("/api/profile/update", AuthMiddleware(http.HandlerFunc(handlers.UpdateUserProfile(db)))).Methods("PATCH")        // Обновление профиля
+	r.Handle("/api/profile/password", AuthMiddleware(http.HandlerFunc(handlers.ChangeUserPassword(db)))).Methods("POST")      // Смена пароля
+	r.Handle("/api/profile/picture", AuthMiddleware(http.HandlerFunc(handlers.UploadUserProfilePicture(db)))).Methods("POST") // Загрузка фотографии профиля
+
+	// Маршрут для главной страницы
+	r.HandleFunc("/main.html", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./habittracker/main.html")
+	}).Methods("GET")
+
+	r.HandleFunc("/login", handlers.LoginHandler(db)).Methods("POST")
+	r.Handle("/api/signup", http.HandlerFunc(handlers.CreateUser(db))).Methods("POST")  // Регистрация пользователя
+	r.Handle("/api/login", http.HandlerFunc(handlers.LoginHandler(db))).Methods("POST") // Вход пользователя
 
 	// Маршруты пользователей
 	r.HandleFunc("/api/users", handlers.CreateUser(db)).Methods("POST")
