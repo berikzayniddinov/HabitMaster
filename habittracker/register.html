@@ -4,26 +4,103 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register</title>
-  <script src="script.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const registrationForm = document.getElementById('registration-form');
+      const nameError = document.getElementById('name-error');
+      const emailError = document.getElementById('email-error');
+      const passwordError = document.getElementById('password-error');
+
+      // Обработчик отправки формы регистрации
+      if (registrationForm) {
+        registrationForm.addEventListener('submit', async (event) => {
+          event.preventDefault(); // Предотвращаем перезагрузку страницы
+
+          // Сброс ошибок
+          nameError.textContent = '';
+          emailError.textContent = '';
+          passwordError.textContent = '';
+
+          // Получаем данные из формы
+          const name = document.getElementById('name').value.trim();
+          const email = document.getElementById('email').value.trim().toLowerCase();
+          const password = document.getElementById('password').value.trim();
+
+          let hasError = false;
+
+          // Проверка ввода
+          if (!name) {
+            nameError.textContent = 'Name is required.';
+            hasError = true;
+          }
+
+          if (!email) {
+            emailError.textContent = 'Email is required.';
+            hasError = true;
+          }
+
+          if (!password || password.length < 8) {
+            passwordError.textContent = 'Password must be at least 8 characters.';
+            hasError = true;
+          }
+
+          if (hasError) return;
+
+          console.log('Registration data:', { name, email, password }); // Для проверки
+
+          try {
+            const response = await fetch('https://abc123.ngrok.io/api/signup', { // Замените URL
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ name, email, password }),
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+              console.log('Server result:', result); // Для проверки
+              alert('Registration successful! Please login.');
+              registrationForm.reset();
+              window.location.href = 'login.html'; // Перенаправляем на страницу логина
+            } else {
+              const error = await response.json();
+              alert(`Ошибка: ${error.message || 'Неизвестная ошибка'}`);
+            }
+          } catch (err) {
+            console.error('Ошибка при регистрации:', err);
+            alert('Произошла ошибка при регистрации');
+          }
+        });
+      }
+    });
+  </script>
 </head>
 <body>
 <header>
   <h1>Welcome to HabitMaster!</h1>
   <p>Your habit and goal tracking tool.</p>
 </header>
-<h1>User registration</h1>
+<h1>User Registration</h1>
 <div class="section" id="registration-section">
   <h2>Register</h2>
   <form id="registration-form">
     <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required>
+    <input type="text" id="name" name="name" autocomplete="name" required>
+    <span id="name-error" class="error-message" style="color: red;"></span>
     <br>
+
     <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
+    <input type="email" id="email" name="email" autocomplete="email" required>
+    <span id="email-error" class="error-message" style="color: red;"></span>
     <br>
+
     <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
+    <input type="password" id="password" name="password" autocomplete="new-password" required
+           minlength="8" pattern=".{8,}" title="Password must be at least 8 characters">
+    <span id="password-error" class="error-message" style="color: red;"></span>
     <br>
+
     <button type="submit">Register</button>
     <a href="main.html" style="margin-left: 10px;">Back to Main</a>
   </form>

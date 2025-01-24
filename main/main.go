@@ -48,8 +48,6 @@ func rateLimiterMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
-
-// AuthMiddleware добавляет user_id в контекст из токена
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := r.Header.Get("Authorization")
@@ -57,8 +55,6 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			http.Error(w, "Missing token", http.StatusUnauthorized)
 			return
 		}
-
-		// Пример декодирования токена
 		userID, err := DecodeTokenAndGetUserID(token)
 		if err != nil {
 			http.Error(w, "Invalid token", http.StatusUnauthorized)
@@ -124,20 +120,13 @@ func main() {
 	// Применяем middleware для ограничения запросов
 	r.Use(rateLimiterMiddleware)
 
-	// Определяем маршруты для профиля пользователя
-
-	r.Handle("/api/profile", AuthMiddleware(http.HandlerFunc(handlers.GetUserProfile(db)))).Methods("GET")                    // Получение профиля
-	r.Handle("/api/profile/update", AuthMiddleware(http.HandlerFunc(handlers.UpdateUserProfile(db)))).Methods("PATCH")        // Обновление профиля
-	r.Handle("/api/profile/password", AuthMiddleware(http.HandlerFunc(handlers.ChangeUserPassword(db)))).Methods("POST")      // Смена пароля
-	r.Handle("/api/profile/picture", AuthMiddleware(http.HandlerFunc(handlers.UploadUserProfilePicture(db)))).Methods("POST") // Загрузка фотографии профиля
-
 	// Маршрут для главной страницы
 	r.HandleFunc("/main.html", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./habittracker/main.html")
 	}).Methods("GET")
 
 	r.HandleFunc("/login", handlers.LoginHandler(db)).Methods("POST")
-	r.Handle("/api/signup", http.HandlerFunc(handlers.CreateUser(db))).Methods("POST")  // Регистрация пользователя
+	r.HandleFunc("/api/signup", handlers.CreateUser(db)).Methods("POST")                // Регистрация пользователя
 	r.Handle("/api/login", http.HandlerFunc(handlers.LoginHandler(db))).Methods("POST") // Вход пользователя
 
 	// Маршруты пользователей
@@ -155,23 +144,6 @@ func main() {
 	r.HandleFunc("/api/goals", handlers.GetGoals(db)).Methods("GET")
 	r.HandleFunc("/api/goals", handlers.UpdateGoal(db)).Methods("PUT")
 	r.HandleFunc("/api/goals", handlers.DeleteGoalByName(db)).Methods("DELETE")
-
-	// Маршруты достижений
-	r.HandleFunc("/api/achievements", handlers.CreateAchievement(db)).Methods("POST")
-	r.HandleFunc("/api/achievements", handlers.GetAchievements(db)).Methods("GET")
-	r.HandleFunc("/api/achievements", handlers.UpdateAchievement(db)).Methods("PUT")
-	r.HandleFunc("/api/achievements", handlers.DeleteAchievementByTitle(db)).Methods("DELETE")
-
-	// Маршруты прогресса
-	r.HandleFunc("/api/progress", handlers.CreateProgress(db)).Methods("POST")
-	r.HandleFunc("/api/progress", handlers.GetProgress(db)).Methods("GET")
-	r.HandleFunc("/api/progress", handlers.UpdateProgressStatus(db)).Methods("PUT")
-
-	// Маршруты уведомлений
-	r.HandleFunc("/api/notifications", handlers.CreateNotification(db)).Methods("POST")
-	r.HandleFunc("/api/notifications", handlers.GetNotifications(db)).Methods("GET")
-	r.HandleFunc("/api/notifications", handlers.UpdateNotification(db)).Methods("PUT")
-	r.HandleFunc("/api/notifications", handlers.DeleteNotificationByName(db)).Methods("DELETE")
 
 	// Маршруты для отправки email
 	r.HandleFunc("/api/admin/send-mass-email", handlers.SendMassEmailHandler(emailService)).Methods("POST")

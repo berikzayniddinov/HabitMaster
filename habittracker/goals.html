@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goals</title>
+</head>
+<body>
+<header>
+    <h1>Goals Management</h1>
+    <p>Manage your goals here.</p>
+    <a href="main.html">Back to Main</a>
+</header>
+
+<div class="section" id="goals-section">
+    <h2>Goals</h2>
+    <div class="controls">
+        <input type="text" id="goal-filter" placeholder="Filter goals">
+        <select id="goal-sort">
+            <option value="">Sort By</option>
+            <option value="name">Name</option>
+            <option value="deadline">Deadline</option>
+        </select>
+        <button onclick="applyGoalFilterSort()">Apply</button>
+    </div>
+    <button class="add-button" onclick="addGoal()">Add Goal</button>
+    <div id="goals-container"></div>
+    <div class="pagination" id="goals-pagination">
+        <button onclick="prevGoalPage()">Previous</button>
+        <button onclick="nextGoalPage()">Next</button>
+    </div>
+</div>
+
+<script>
+    let currentGoalPage = 1;
+
+    // Получение целей
+    async function getGoals() {
+        const filter = document.getElementById('goal-filter')?.value || '';
+        const sort = document.getElementById('goal-sort')?.value || '';
+        const page = currentGoalPage;
+
+        const url = `https://abc123.ngrok.io/api/goals?filter=${encodeURIComponent(filter)}&sort=${encodeURIComponent(sort)}&page=${page}`;
+        try {
+            const response = await fetch(url, { method: 'GET' });
+            if (!response.ok) {
+                throw new Error(`Error fetching goals: ${response.statusText}`);
+            }
+
+            const goals = await response.json();
+            const container = document.getElementById('goals-container');
+            container.innerHTML = ''; // Очистка контейнера
+
+            if (!goals || goals.length === 0) {
+                container.innerHTML = '<p>No goals found.</p>';
+                return;
+            }
+
+            goals.forEach(goal => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+          <h3>${goal.name}</h3>
+          <p><strong>Description:</strong> ${goal.description}</p>
+          <p><strong>Deadline:</strong> ${new Date(goal.deadline).toLocaleDateString()}</p>
+          <div class="card-actions">
+            <button class="edit" onclick="editGoal('${goal.name}', '${goal.description}', '${goal.deadline}')">Edit</button>
+            <button class="delete" onclick="deleteGoalByName('${goal.name}')">Delete</button>
+          </div>
+        `;
+                container.appendChild(card);
+            });
+
+            updateGoalPaginationControls();
+        } catch (error) {
+            console.error('Error fetching goals:', error.message);
+            alert('Failed to fetch goals.');
+        }
+    }
+
+    // Применение фильтров и сортировки
+    function applyGoalFilterSort() {
+        getGoals();
+    }
+
+    // Пагинация
+    function updateGoalPaginationControls() {
+        const paginationContainer = document.getElementById('goals-pagination');
+        paginationContainer.innerHTML = `
+      <button onclick="prevGoalPage()">Previous</button>
+      <button onclick="nextGoalPage()">Next</button>
+    `;
+    }
+
+    function prevGoalPage() {
+        if (currentGoalPage > 1) {
+            currentGoalPage--;
+            getGoals();
+        }
+    }
+
+    function nextGoalPage() {
+        currentGoalPage++;
+        getGoals();
+    }
+
+    // Добавление цели
+    async function addGoal() {
+        const name = prompt('Enter goal name:');
+        const description = prompt('Enter goal description:');
+        const deadline = prompt('Enter deadline (YYYY-MM-DD):');
+
+        if (!name || !deadline) {
+            alert('Name and deadline are required!');
+            return;
+        }
+
+        const goal = { name, description, deadline };
+
+        try {
+            const response = await fetch('https://abc123.ngrok.io/api/goals', { // Заменено URL
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(goal),
+            });
+
+            if (response.ok) {
+                alert('Goal successfully added!');
+                getGoals();
+            } else {
+                const errorText = await response.text();
+                console.error('Error adding goal:', errorText);
+                alert('Error adding goal.');
+            }
+        } catch (error) {
+            console.error('Unexpected error adding goal:', error);
+            alert('Unexpected error adding goal.');
+        }
+    }
+
+    // Удаление цели
+    async function deleteGoalByName(name) {
+        try {
+            const response = await fetch(`https://abc123.ngrok.io/api/goals/deleteByName?name=${encodeURIComponent(name)}`, { // Заменено URL
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                alert('Goal successfully deleted!');
+                getGoals(); // Обновить список целей
+            } else {
+                const errorText = await response.text();
+                console.error('Error deleting goal:', errorText);
+                alert(`Error deleting goal: ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Unexpected error deleting goal:', error);
+            alert('Unexpected error deleting goal.');
+        }
+    }
+
+    // Редактирование цели
+    async function editGoal(currentName, currentDescription, currentDeadline) {
+        const newName = prompt('Enter new name:', currentName);
+        const newDescription = prompt('Enter new description:', currentDescription);
+        const newDeadline = prompt('Enter new deadline (YYYY-MM-DD):', currentDeadline);
+
+        if (!newName || !newDeadline) {
+            alert('Name and deadline are required!');
+            return;
+        }
+
+        const updatedGoal = { oldName: currentName, name: newName, description: newDescription, deadline: newDeadline };
+
+        try {
+            const response = await fetch('https://abc123.ngrok.io/api/goals', { // Заменено URL
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedGoal),
+            });
+
+            if (response.ok) {
+                alert('Goal successfully updated!');
+                getGoals();
+            } else {
+                const errorText = await response.text();
+                console.error('Error updating goal:', errorText);
+                alert('Error updating goal.');
+            }
+        } catch (error) {
+            console.error('Unexpected error updating goal:', error);
+            alert('Unexpected error updating goal.');
+        }
+    }
+
+    // Инициализация
+    window.onload = getGoals;
+</script>
+</body>
+</html>

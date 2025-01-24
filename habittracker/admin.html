@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Admin Panel</h1>
+    </header>
+    <main>
+        <section>
+            <h1>Send Promotional Email</h1>
+            <form id="email-form">
+                <label for="to">To:</label>
+                <input type="text" id="to" name="to">
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject">
+                <label for="body">Body:</label>
+                <textarea id="body" name="body"></textarea>
+                <label for="attachment">Attachment (optional):</label>
+                <input type="file" id="attachment" name="attachment">
+                <span>File not selected</span>
+                <input type="button" value="Send Email" onclick="sendPromotionalEmail()">
+            </form>
+        </section>
+
+        <!-- User Management Section -->
+        <section>
+            <h1>All Users</h1>
+            <div class="section" id="users-section">
+                <h2>Users</h2>
+                <button id="get-users" onclick="getUsers()">Get Users</button>
+                <ul id="user-list"></ul>
+            </div>
+
+            <label for="emailFilter">Filter by Email:</label>
+            <input type="text" id="emailFilter" placeholder="Enter email">
+            <label for="usernameFilter">Filter by Username:</label>
+            <input type="text" id="usernameFilter" placeholder="Enter username">
+            <button type="button" onclick="applyUserFilters()">Apply Filters</button>
+
+            <label for="sortUsers">Sort:</label>
+            <select id="sortUsers">
+                <option value="usernameAZ">Username (A-Z)</option>
+            </select>
+            <button type="button" onclick="applyUserSort()">Apply Sort</button>
+
+            <label for="pageNumber">Page:</label>
+            <input type="number" id="pageNumber" value="1">
+            <button type="button" onclick="goToUserPage()">Go</button>
+
+            <h2>Manage Users</h2>
+            <button type="button" onclick="createUser()">Create User</button>
+            <button type="button" onclick="updateUser()">Update User</button>
+            <button type="button" onclick="deleteUser()">Delete User</button>
+
+            <h2>Search User</h2>
+            <label for="searchEmail">Email:</label>
+            <input type="text" id="searchEmail" placeholder="Enter email">
+            <button type="button" onclick="searchUserByEmail()">Search by Email</button>
+
+            <label for="searchUsername">Username:</label>
+            <input type="text" id="searchUsername" placeholder="Enter username">
+            <button type="button" onclick="searchUserByUsername()">Search by Username</button>
+        </section>
+
+        <!-- Habit Management Section -->
+        <section>
+            <h1>All Habits</h1>
+            <div class="section" id="habits-section">
+                <h2>Habits</h2>
+                <button id="get-habits" onclick="getHabits()">Get Habits</button>
+                <ul id="habit-list"></ul>
+            </div>
+
+            <label for="habit-filter-name">Filter by Name:</label>
+            <input type="text" id="habit-filter-name" placeholder="Enter habit name">
+            <button onclick="applyHabitFilters()">Apply Filters</button>
+
+            <label for="habit-page">Page:</label>
+            <input type="number" id="habit-page" value="1">
+            <button onclick="goToHabitPage()">Go</button>
+
+            <h2>Manage Habits</h2>
+            <button onclick="createHabit()">Create Habit</button>
+            <button onclick="updateHabit()">Update Habit</button>
+            <button onclick="deleteHabit()">Delete Habit</button>
+
+            <h2>Search Habit</h2>
+            <label for="habit-id">ID:</label>
+            <input type="text" id="habit-id" placeholder="Enter habit ID">
+            <button onclick="searchHabitById()">Search by ID</button>
+
+            <label for="habit-name">Name:</label>
+            <input type="text" id="habit-name" placeholder="Enter habit name">
+            <button onclick="searchHabitByName()">Search by Name</button>
+        </section>
+
+        <!-- Goal Management Section -->
+        <section>
+            <h1>All Goals</h1>
+            <div class="section" id="goals-section">
+                <h2>Goals</h2>
+                <button id="get-goals" onclick="getGoals()">Get Goals</button>
+                <ul id="goal-list"></ul>
+            </div>
+
+            <label for="goal-filter-name">Filter by Name:</label>
+            <input type="text" id="goal-filter-name" placeholder="Enter goal name">
+            <button onclick="applyGoalFilters()">Apply Filters</button>
+
+            <label for="goal-page">Page:</label>
+            <input type="number" id="goal-page" value="1">
+            <button onclick="goToGoalPage()">Go</button>
+
+            <h2>Manage Goals</h2>
+            <button onclick="createGoal()">Create Goal</button>
+            <button onclick="updateGoal()">Update Goal</button>
+            <button onclick="deleteGoal()">Delete Goal</button>
+
+            <h2>Search Goal</h2>
+            <label for="goal-id">ID:</label>
+            <input type="text" id="goal-id" placeholder="Enter goal ID">
+            <button onclick="searchGoalById()">Search by ID</button>
+
+            <label for="goal-name">Name:</label>
+            <input type="text" id="goal-name" placeholder="Goal name">
+            <button onclick="searchGoalByName()">Search by Name</button>
+        </section>
+    </main>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

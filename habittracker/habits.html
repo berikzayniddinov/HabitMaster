@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habits</title>
+</head>
+<body>
+<header>
+    <h1>Habits Management</h1>
+    <p>Manage your habits here.</p>
+    <a href="main.html">Back to Main</a>
+</header>
+
+<div class="section" id="habits-section">
+    <h2>Habits</h2>
+    <div class="controls">
+        <input type="text" id="habit-filter" placeholder="Filter habits">
+        <select id="habit-sort">
+            <option value="">Sort By</option>
+            <option value="name">Name</option>
+        </select>
+        <button onclick="applyHabitFilterSort()">Apply</button>
+    </div>
+    <button class="add-button" onclick="addHabit()">Add Habit</button>
+    <div id="habits-container"></div>
+    <div class="pagination" id="habits-pagination">
+        <button onclick="prevHabitPage()">Previous</button>
+        <button onclick="nextHabitPage()">Next</button>
+    </div>
+</div>
+
+<script>
+    let currentHabitPage = 1;
+
+    // Получение привычек
+    async function getHabits() {
+        const filter = document.getElementById('habit-filter')?.value || '';
+        const sort = document.getElementById('habit-sort')?.value || '';
+        const page = currentHabitPage;
+
+        const url = `http://localhost:8080/api/habits?filter=${encodeURIComponent(filter)}&sort=${encodeURIComponent(sort)}&page=${page}`;
+        try {
+            const response = await fetch(url, { method: 'GET' });
+            if (!response.ok) {
+                throw new Error(`Error fetching habits: ${response.statusText}`);
+            }
+
+            const habits = await response.json();
+            const container = document.getElementById('habits-container');
+            container.innerHTML = ''; // Очистка контейнера
+
+            if (!habits || habits.length === 0) {
+                container.innerHTML = '<p>No habits found.</p>';
+                return;
+            }
+
+            habits.forEach(habit => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+          <h3>${habit.name}</h3>
+          <p><strong>Description:</strong> ${habit.description}</p>
+          <p><strong>Created At:</strong> ${new Date(habit.created_at).toLocaleString()}</p>
+          <div class="card-actions">
+            <button class="edit" onclick="editHabit('${habit.name}', '${habit.description}')">Edit</button>
+            <button class="delete" onclick="deleteHabit('${habit.name}')">Delete</button>
+          </div>
+        `;
+                container.appendChild(card);
+            });
+
+            updateHabitPaginationControls();
+        } catch (error) {
+            console.error('Error fetching habits:', error.message);
+            alert('Failed to fetch habits.');
+        }
+    }
+
+    function applyHabitFilterSort() {
+        getHabits();
+    }
+
+    // Пагинация
+    function updateHabitPaginationControls() {
+        const paginationContainer = document.getElementById('habits-pagination');
+        paginationContainer.innerHTML = `
+      <button onclick="prevHabitPage()">Previous</button>
+      <button onclick="nextHabitPage()">Next</button>
+    `;
+    }
+
+    function prevHabitPage() {
+        if (currentHabitPage > 1) {
+            currentHabitPage--;
+            getHabits();
+        }
+    }
+
+    function nextHabitPage() {
+        currentHabitPage++;
+        getHabits();
+    }
+
+    // Добавление привычки
+    async function addHabit() {
+        const name = prompt('Enter habit name:');
+        const description = prompt('Enter habit description:');
+
+        if (!name) {
+            alert('Habit name is required!');
+            return;
+        }
+
+        const habit = { name, description };
+
+        try {
+            const response = await fetch('http://localhost:8080/api/habits', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(habit),
+            });
+
+            if (response.ok) {
+                alert('Habit successfully added!');
+                getHabits();
+            } else {
+                const errorText = await response.text();
+                console.error('Error adding habit:', errorText);
+                alert('Error adding habit.');
+            }
+        } catch (error) {
+            console.error('Unexpected error adding habit:', error);
+            alert('Unexpected error adding habit.');
+        }
+    }
+
+    // Удаление привычки
+    async function deleteHabit(name) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/habits?name=${encodeURIComponent(name)}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                alert('Habit successfully deleted!');
+                getHabits(); // Обновить список привычек
+            } else {
+                const errorText = await response.text();
+                console.error('Error deleting habit:', errorText);
+                alert(`Error deleting habit: ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Unexpected error deleting habit:', error);
+            alert('Unexpected error deleting habit.');
+        }
+    }
+
+    // Редактирование привычки
+    async function editHabit(oldName, currentDescription) {
+        const newName = prompt('Enter new habit name:', oldName);
+        const newDescription = prompt('Enter new habit description:', currentDescription);
+
+        if (!newName) {
+            alert('Habit name is required!');
+            return;
+        }
+
+        const updatedHabit = { oldName, name: newName, description: newDescription };
+
+        try {
+            const response = await fetch('http://localhost:8080/api/habits', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedHabit),
+            });
+
+            if (response.ok) {
+                alert('Habit successfully updated!');
+                getHabits();
+            } else {
+                const errorText = await response.text();
+                console.error('Error updating habit:', errorText);
+                alert('Error updating habit.');
+            }
+        } catch (error) {
+            console.error('Unexpected error updating habit:', error);
+            alert('Unexpected error updating habit.');
+        }
+    }
+
+    // Инициализация
+    window.onload = getHabits;
+</script>
+</body>
+</html>

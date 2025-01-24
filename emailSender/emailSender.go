@@ -8,7 +8,6 @@ import (
 	"strconv"
 )
 
-// EmailSender содержит параметры SMTP
 type EmailSender struct {
 	Host     string
 	Port     int
@@ -16,7 +15,6 @@ type EmailSender struct {
 	Password string
 }
 
-// NewEmailSender создает новый экземпляр EmailSender
 func NewEmailSender() *EmailSender {
 	return &EmailSender{
 		Host:     os.Getenv("SMTP_HOST"),
@@ -25,8 +23,6 @@ func NewEmailSender() *EmailSender {
 		Password: os.Getenv("SMTP_PASSWORD"),
 	}
 }
-
-// mustParseInt преобразует строку в int, с обработкой ошибки
 func mustParseInt(s string) int {
 	port, err := strconv.Atoi(s)
 	if err != nil {
@@ -34,8 +30,6 @@ func mustParseInt(s string) int {
 	}
 	return port
 }
-
-// SendEmail отправляет email
 func (e *EmailSender) SendEmail(to []string, subject, body string) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", e.Username)
@@ -50,8 +44,6 @@ func (e *EmailSender) SendEmail(to []string, subject, body string) error {
 	}
 	return nil
 }
-
-// SendEmailWithAttachment отправляет email с вложением
 func (e *EmailSender) SendEmailWithAttachment(to []string, subject, body, fileName string, fileData []byte) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", e.Username)

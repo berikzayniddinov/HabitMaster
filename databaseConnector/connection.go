@@ -13,24 +13,20 @@ import (
 func ConnectBD() *sql.DB {
 	log.Println("Инициализация подключения к базе данных...")
 
-	// Загрузка файла окружения
 	if err := godotenv.Load(".env"); err != nil {
 		log.Println("Ошибка загрузки файла окружения:", err)
 	} else {
 		log.Println("Файл окружения успешно загружен.")
 	}
 
-	// Получение переменных окружения
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbUser := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
 
-	// Логирование полученных значений
 	log.Printf("Параметры подключения: host=%s, port=%s, user=%s, password=[скрыто], dbname=%s\n", dbHost, dbPort, dbUser, dbName)
 
-	// Формирование строки подключения
 	connStr := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		dbHost,
@@ -41,7 +37,6 @@ func ConnectBD() *sql.DB {
 	)
 	log.Println("Строка подключения сформирована:", connStr)
 
-	// Подключение к базе данных
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatalf("Ошибка подключения к базе данных: %v", err)
@@ -51,7 +46,6 @@ func ConnectBD() *sql.DB {
 	if err = db.Ping(); err != nil {
 		log.Fatalf("Ошибка проверки соединения с базой данных: %v", err)
 	}
-
 	log.Println("Подключение к базе данных успешно установлено.")
 	return db
 }

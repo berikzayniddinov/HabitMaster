@@ -4,7 +4,71 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
-  <script src="script.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const loginForm = document.getElementById('login-form');
+      const emailError = document.getElementById('email-error');
+      const passwordError = document.getElementById('password-error');
+
+      // Обработчик отправки формы логина
+      if (loginForm) {
+        loginForm.addEventListener('submit', async (event) => {
+          event.preventDefault(); // Предотвращаем перезагрузку страницы
+
+          // Сброс ошибок
+          emailError.textContent = '';
+          passwordError.textContent = '';
+
+          // Получаем данные из формы
+          const email = document.getElementById('login-email').value.trim().toLowerCase();
+          const password = document.getElementById('login-password').value.trim();
+
+          let hasError = false;
+
+          // Проверка ввода
+          if (!email) {
+            emailError.textContent = 'Email is required.';
+            hasError = true;
+          }
+
+          if (!password) {
+            passwordError.textContent = 'Password is required.';
+            hasError = true;
+          }
+
+          if (hasError) return;
+
+          console.log('Login data:', { email, password }); // Для проверки
+
+          try {
+            const response = await fetch('https://abc123.ngrok.io/api/login', { // Замените URL
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ email, password }),
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+              console.log('Server result:', result); // Для проверки
+
+              // Сохраняем токен в localStorage
+              localStorage.setItem('authToken', result.token);
+              alert('Login successful!');
+              window.location.href = 'main.html'; // Перенаправляем на главную страницу
+            } else {
+              const error = await response.json();
+              alert(`Ошибка: ${error.message || 'Неизвестная ошибка'}`);
+            }
+          } catch (err) {
+            console.error('Ошибка при входе:', err);
+            alert('Произошла ошибка при входе');
+          }
+        });
+      }
+    });
+  </script>
 </head>
 <body>
 <header>
@@ -17,9 +81,11 @@
   <form id="login-form">
     <label for="login-email">Email:</label>
     <input type="email" id="login-email" name="email" required>
+    <span id="email-error" class="error-message" style="color: red;"></span>
     <br>
     <label for="login-password">Password:</label>
     <input type="password" id="login-password" name="password" required>
+    <span id="password-error" class="error-message" style="color: red;"></span>
     <br>
     <button type="submit">Login</button>
     <a href="main.html" style="margin-left: 10px;">Back to Main</a>
