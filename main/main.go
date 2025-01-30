@@ -6,58 +6,61 @@ import (
 	"HabitMaster/handlers"
 	"context"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/time/rate"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 )
+
+type JWTClaims struct {
+	UserID int    `json:"user_id"`
+	Email  string `json:"email"`
+	jwt.StandardClaims
+}
 
 var (
 	clients = make(map[string]*rate.Limiter)
 	mu      sync.Mutex
 )
 
-// getLimiter возвращает лимитер для IP клиента
 func getLimiter(ip string) *rate.Limiter {
 	mu.Lock()
 	defer mu.Unlock()
 
-	// Если лимитер для IP не существует, создаем новый
 	if limiter, exists := clients[ip]; exists {
 		return limiter
 	}
-
-	limiter := rate.NewLimiter(1, 1) // 1 запрос в секунду, burst до 5
+	limiter := rate.NewLimiter(1, 1)
 	clients[ip] = limiter
 	return limiter
 }
 
-// rateLimiterMiddleware создает middleware для ограничения запросов
 func rateLimiterMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ip := r.RemoteAddr // Получаем IP клиента
+		ip := r.RemoteAddr
 		limiter := getLimiter(ip)
-
 		if !limiter.Allow() {
 			http.Error(w, "Too Many Requests", http.StatusTooManyRequests)
 			return
 		}
-
 		next.ServeHTTP(w, r)
 	})
 }
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		token := r.Header.Get("Authorization")
-		if token == "" {
+		authHeader := r.Header.Get("Authorization")
+		if authHeader == "" {
 			http.Error(w, "Missing token", http.StatusUnauthorized)
 			return
 		}
-		userID, err := DecodeTokenAndGetUserID(token)
+
+		userID, err := DecodeTokenAndGetUserID(authHeader)
 		if err != nil {
-			http.Error(w, "Invalid token", http.StatusUnauthorized)
+			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
 
@@ -66,30 +69,39 @@ func AuthMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-// DecodeTokenAndGetUserID заглушка декодирования токена
-func DecodeTokenAndGetUserID(token string) (int, error) {
-	if token == "valid-token" {
-		return 1, nil
+func DecodeTokenAndGetUserID(authHeader string) (int, error) {
+	parts := strings.SplitN(authHeader, " ", 2)
+	if len(parts) != 2 || parts[0] != "Bearer" {
+		return 0, fmt.Errorf("invalid authorization header")
 	}
-	return 0, fmt.Errorf("invalid token")
+
+	tokenString := parts[1]
+	// Разбираем JWT:
+	claims := &JWTClaims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
+		return []byte("your-secret-key"), nil
+	})
+	if err != nil || !token.Valid {
+		return 0, fmt.Errorf("invalid token")
+	}
+
+	// Предположим, что JWTClaims содержит userID
+	return claims.UserID, nil
 }
 
 func main() {
-	// Создаем лог-файл
 	logFile, err := os.OpenFile("server_logs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		logrus.Fatalf("Failed to open log file: %v", err)
 	}
 	defer logFile.Close()
 
-	// Настройка логирования
 	log := logrus.New()
 	log.SetFormatter(&logrus.JSONFormatter{})
-	log.SetOutput(logFile) // Перенаправляем вывод логов в файл
+	log.SetOutput(logFile)
 
 	log.Info("Инициализация сервера")
 
-	// Подключение к базе данных
 	db := databaseConnector.ConnectBD()
 	defer func() {
 		if err := db.Close(); err != nil {
@@ -99,61 +111,68 @@ func main() {
 
 	log.Info("Успешное подключение к базе данных")
 
-	// Создаем email-сервис
 	emailService := emailSender.NewEmailSender()
-
-	// Создаем маршрутизатор
 	r := mux.NewRouter()
 
-	// Логирование запросов
 	r.Use(func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			log.WithFields(logrus.Fields{
-				"method": r.Method,
-				"url":    r.RequestURI,
-				"remote": r.RemoteAddr,
+				"method": req.Method,
+				"url":    req.RequestURI,
+				"remote": req.RemoteAddr,
 			}).Info("Получен запрос")
-			next.ServeHTTP(w, r)
+			next.ServeHTTP(w, req)
 		})
 	})
 
-	// Применяем middleware для ограничения запросов
 	r.Use(rateLimiterMiddleware)
+	// Пример защищённого роутера
+	protected := r.PathPrefix("/api/protected").Subrouter()
 
-	// Маршрут для главной страницы
-	r.HandleFunc("/main.html", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "./habittracker/main.html")
+	// Подключаем ваш AuthMiddleware
+	protected.Use(AuthMiddleware)
+
+	// Определяем обработчики, которые должны быть доступны только авторизованным пользователям
+	protected.HandleFunc("/profile", func(w http.ResponseWriter, r *http.Request) {
+		userID := r.Context().Value("user_id").(int)
+		fmt.Fprintf(w, "This is a protected route. user_id = %d\n", userID)
 	}).Methods("GET")
 
-	r.HandleFunc("/login", handlers.LoginHandler(db)).Methods("POST")
-	r.HandleFunc("/api/signup", handlers.CreateUser(db)).Methods("POST")                // Регистрация пользователя
-	r.Handle("/api/login", http.HandlerFunc(handlers.LoginHandler(db))).Methods("POST") // Вход пользователя
+	r.HandleFunc("/main.html", func(w http.ResponseWriter, req *http.Request) {
+		http.ServeFile(w, req, "./habittracker/main.html")
+	}).Methods("GET")
 
-	// Маршруты пользователей
+	r.HandleFunc("/api/signup", handlers.CreateUser(db)).Methods("POST")
 	r.HandleFunc("/api/users", handlers.CreateUser(db)).Methods("POST")
 	r.HandleFunc("/api/get-users", handlers.GetUsers(db)).Methods("GET")
+	r.HandleFunc("/api/register", handlers.RegisterUser(db, emailService)).Methods("POST")
+	r.HandleFunc("/api/verify-email", handlers.VerifyEmail(db)).Methods("GET")
 
-	// Маршруты привычек
+	jwtSecret := "your-secret-key"
+	r.HandleFunc("/login", handlers.LoginHandler(db, jwtSecret)).Methods("POST")
+
 	r.HandleFunc("/api/habits", handlers.CreateHabit(db)).Methods("POST")
 	r.HandleFunc("/api/habits", handlers.GetHabits(db)).Methods("GET")
 	r.HandleFunc("/api/habits", handlers.DeleteHabitByName(db)).Methods("DELETE")
 	r.HandleFunc("/api/habits", handlers.UpdateHabit(db)).Methods("PUT")
+	r.HandleFunc("/api/assign-role", handlers.AssignRoleToUser(db)).Methods("POST")
 
-	// Маршруты целей
+	r.Handle("/api/admin-action", handlers.RoleMiddleware("admin", db)(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		w.Write([]byte("This is an admin action."))
+	})))
+
 	r.HandleFunc("/api/goals", handlers.CreateGoal(db)).Methods("POST")
 	r.HandleFunc("/api/goals", handlers.GetGoals(db)).Methods("GET")
 	r.HandleFunc("/api/goals", handlers.UpdateGoal(db)).Methods("PUT")
 	r.HandleFunc("/api/goals", handlers.DeleteGoalByName(db)).Methods("DELETE")
-
-	// Маршруты для отправки email
+	r.HandleFunc("/api/goals/deleteAll", handlers.DeleteAllGoals(db)).Methods("DELETE") // Новый маршрут
+	
 	r.HandleFunc("/api/admin/send-mass-email", handlers.SendMassEmailHandler(emailService)).Methods("POST")
 	r.HandleFunc("/api/user/send-support-email", handlers.SendSupportEmailHandler(emailService)).Methods("POST")
 	r.HandleFunc("/api/admin/send-email-with-attachment", handlers.SendEmailWithAttachmentHandler(emailService)).Methods("POST")
 
-	// Раздача статических файлов
 	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("./habittracker"))))
 
-	// Запуск сервера
 	log.Info("Сервер запущен на порту 8080")
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.WithError(err).Fatal("Ошибка при запуске сервера")

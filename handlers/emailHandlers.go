@@ -25,7 +25,7 @@ type SupportEmailRequest struct {
 }
 
 // SendMassEmailHandler обработчик для массовой рассылки
-func SendMassEmailHandler(emailSender *emailSender.EmailSender) http.HandlerFunc {
+func SendMassEmailHandler(emailSender emailSender.EmailSender) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		r.ParseMultipartForm(10 << 20) // Ограничение размера файла (10MB)
 
@@ -54,11 +54,11 @@ func SendMassEmailHandler(emailSender *emailSender.EmailSender) http.HandlerFunc
 		// Отправляем email с файлом (если он был)
 		log.Printf("Sending email to: %v, subject: %s, file: %s, file size: %d bytes", to, subject, fileName, len(fileBytes))
 		err = emailSender.SendEmailWithAttachment(
-			to,        // Список получателей
-			subject,   // Тема письма
-			body,      // Тело письма
-			fileName,  // Имя файла
-			fileBytes, // Содержимое файла
+			to,
+			subject,
+			body,
+			fileName,
+			fileBytes,
 		)
 		if err != nil {
 			http.Error(w, "Failed to send email", http.StatusInternalServerError)
@@ -71,7 +71,7 @@ func SendMassEmailHandler(emailSender *emailSender.EmailSender) http.HandlerFunc
 }
 
 // SendSupportEmailHandler обработчик для отправки письма в поддержку
-func SendSupportEmailHandler(emailSender *emailSender.EmailSender) http.HandlerFunc {
+func SendSupportEmailHandler(emailSender emailSender.EmailSender) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req SupportEmailRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -91,7 +91,7 @@ func SendSupportEmailHandler(emailSender *emailSender.EmailSender) http.HandlerF
 }
 
 // SendEmailWithAttachmentHandler обработчик для отправки email с вложением
-func SendEmailWithAttachmentHandler(emailSender *emailSender.EmailSender) http.HandlerFunc {
+func SendEmailWithAttachmentHandler(emailSender emailSender.EmailSender) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseMultipartForm(10 << 20) // Ограничение на размер данных 10 MB
 		if err != nil {
@@ -121,11 +121,11 @@ func SendEmailWithAttachmentHandler(emailSender *emailSender.EmailSender) http.H
 
 		// Отправка email с вложением
 		if err := emailSender.SendEmailWithAttachment(
-			strings.Split(recipients, ","), // Разделяем строку с email'ами на массив
+			strings.Split(recipients, ","),
 			subject,
 			body,
-			header.Filename, // Имя файла
-			fileBytes,       // Содержимое файла
+			header.Filename,
+			fileBytes,
 		); err != nil {
 			http.Error(w, "Failed to send email with attachment", http.StatusInternalServerError)
 			return

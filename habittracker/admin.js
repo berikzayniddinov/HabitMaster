@@ -1,6 +1,4 @@
-// admin.js
-
-const apiBaseUrl = 'https://abc123.ngrok.io'; // Замените на актуальный URL ngrok
+const apiBaseUrl = 'https://abc123.ngrok.io'; // Замените на нужный URL (или http://localhost:8080)
 
 // Общая функция для выполнения запросов
 async function fetchData(endpoint, options = {}) {
@@ -16,6 +14,8 @@ async function fetchData(endpoint, options = {}) {
         return null;
     }
 }
+
+// Отправка промо-письма
 async function sendPromotionalEmail() {
     const to = document.getElementById('to').value;
     const subject = document.getElementById('subject').value;
@@ -41,7 +41,7 @@ async function sendPromotionalEmail() {
     try {
         const response = await fetch(`${apiBaseUrl}/api/admin/send-mass-email`, {
             method: 'POST',
-            body: formData, // Использование FormData для загрузки файла
+            body: formData, // Используем FormData для загрузки файла
         });
 
         if (response.ok) {
@@ -57,6 +57,7 @@ async function sendPromotionalEmail() {
     }
 }
 
+// Получение списка пользователей
 async function getUsers() {
     const users = await fetchData('/api/get-users');
     if (users) {
@@ -94,7 +95,6 @@ async function applyUserFilters() {
 // Применение сортировки пользователей
 async function applyUserSort() {
     const sortOption = document.getElementById('sortUsers').value;
-
     const query = new URLSearchParams();
     query.append('sort', sortOption);
 
@@ -113,7 +113,6 @@ async function applyUserSort() {
 // Переход на определённую страницу пользователей
 async function goToUserPage() {
     const page = document.getElementById('pageNumber').value;
-
     const query = new URLSearchParams();
     query.append('page', page);
 
@@ -257,206 +256,6 @@ async function searchUserByUsername() {
     }
 }
 
-
-// Получение списка привычек
-async function getHabits() {
-    const habits = await fetchData('/api/habits');
-    if (habits) {
-        const habitList = document.getElementById('habit-list');
-        habitList.innerHTML = '';
-        habits.forEach(habit => {
-            const li = document.createElement('li');
-            li.textContent = `${habit.name} - ${habit.description}`;
-            habitList.appendChild(li);
-        });
-    }
-}
-
-async function getGoals() {
-    const goals = await fetchData('/api/goals');
-    if (goals) {
-        const goalList = document.getElementById('goal-list');
-        goalList.innerHTML = '';
-        goals.forEach(goal => {
-            const li = document.createElement('li');
-            li.textContent = `${goal.name} - ${goal.deadline}`;
-            goalList.appendChild(li);
-        });
-    }
-}
-
-// Применение фильтров для целей
-async function applyGoalFilters() {
-    const nameFilter = document.getElementById('goal-filter-name').value;
-
-    const query = new URLSearchParams();
-    if (nameFilter) query.append('name', nameFilter);
-
-    const goals = await fetchData(`/api/goals?${query.toString()}`);
-    if (goals) {
-        const goalList = document.getElementById('goal-list');
-        goalList.innerHTML = '';
-        goals.forEach(goal => {
-            const li = document.createElement('li');
-            li.textContent = `${goal.name} - ${goal.deadline}`;
-            goalList.appendChild(li);
-        });
-    }
-}
-
-// Переход на определённую страницу целей
-async function goToGoalPage() {
-    const page = document.getElementById('goal-page').value;
-
-    const query = new URLSearchParams();
-    query.append('page', page);
-
-    const goals = await fetchData(`/api/goals?${query.toString()}`);
-    if (goals) {
-        const goalList = document.getElementById('goal-list');
-        goalList.innerHTML = '';
-        goals.forEach(goal => {
-            const li = document.createElement('li');
-            li.textContent = `${goal.name} - ${goal.deadline}`;
-            goalList.appendChild(li);
-        });
-    }
-}
-
-// Создание новой цели
-async function createGoal() {
-    const name = prompt('Enter goal name:');
-    const description = prompt('Enter goal description:');
-    const deadline = prompt('Enter goal deadline (YYYY-MM-DD):');
-
-    if (!name || !deadline) {
-        alert('Name and deadline are required!');
-        return;
-    }
-
-    const goal = { name, description, deadline };
-
-    try {
-        const response = await fetch(`${apiBaseUrl}/api/goals`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(goal),
-        });
-
-        if (response.ok) {
-            alert('Goal created successfully!');
-            getGoals();
-        } else {
-            throw new Error(await response.text());
-        }
-    } catch (error) {
-        console.error('Error creating goal:', error);
-        alert('Failed to create goal.');
-    }
-}
-
-// Обновление существующей цели
-async function updateGoal() {
-    const id = prompt('Enter goal ID to update:');
-    const name = prompt('Enter new goal name:');
-    const description = prompt('Enter new goal description:');
-    const deadline = prompt('Enter new goal deadline (YYYY-MM-DD):');
-
-    if (!id || !name || !deadline) {
-        alert('ID, name, and deadline are required!');
-        return;
-    }
-
-    const goal = { id, name, description, deadline };
-
-    try {
-        const response = await fetch(`${apiBaseUrl}/api/goals`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(goal),
-        });
-
-        if (response.ok) {
-            alert('Goal updated successfully!');
-            getGoals();
-        } else {
-            throw new Error(await response.text());
-        }
-    } catch (error) {
-        console.error('Error updating goal:', error);
-        alert('Failed to update goal.');
-    }
-}
-
-// Удаление цели
-async function deleteGoal() {
-    const id = prompt('Enter goal ID to delete:');
-
-    if (!id) {
-        alert('ID is required!');
-        return;
-    }
-
-    try {
-        const response = await fetch(`${apiBaseUrl}/api/goals?id=${id}`, {
-            method: 'DELETE',
-        });
-
-        if (response.ok) {
-            alert('Goal deleted successfully!');
-            getGoals();
-        } else {
-            throw new Error(await response.text());
-        }
-    } catch (error) {
-        console.error('Error deleting goal:', error);
-        alert('Failed to delete goal.');
-    }
-}
-
-// Поиск цели по ID
-async function searchGoalById() {
-    const id = document.getElementById('goal-id').value;
-
-    if (!id) {
-        alert('ID is required!');
-        return;
-    }
-
-    const goal = await fetchData(`/api/goals?id=${id}`);
-    if (goal) {
-        alert(`Goal found: ${goal.name} - ${goal.description}`);
-    } else {
-        alert('Goal not found.');
-    }
-}
-
-// Поиск цели по имени
-async function searchGoalByName() {
-    const name = document.getElementById('goal-name').value;
-
-    if (!name) {
-        alert('Name is required!');
-        return;
-    }
-
-    const goals = await fetchData(`/api/goals?name=${encodeURIComponent(name)}`);
-    if (goals && goals.length > 0) {
-        const goalList = document.getElementById('goal-list');
-        goalList.innerHTML = '';
-        goals.forEach(goal => {
-            const li = document.createElement('li');
-            li.textContent = `${goal.name} - ${goal.deadline}`;
-            goalList.appendChild(li);
-        });
-    } else {
-        alert('No goals found.');
-    }
-}
 // Получение списка привычек
 async function getHabits() {
     const habits = await fetchData('/api/habits');
@@ -474,7 +273,6 @@ async function getHabits() {
 // Применение фильтров для привычек
 async function applyHabitFilters() {
     const nameFilter = document.getElementById('habit-filter-name').value;
-
     const query = new URLSearchParams();
     if (nameFilter) query.append('name', nameFilter);
 
@@ -493,7 +291,6 @@ async function applyHabitFilters() {
 // Переход на определённую страницу привычек
 async function goToHabitPage() {
     const page = document.getElementById('habit-page').value;
-
     const query = new URLSearchParams();
     query.append('page', page);
 
@@ -641,3 +438,64 @@ async function searchHabitByName() {
         alert('No habits found.');
     }
 }
+
+// Привязка роли к пользователю
+document.getElementById('assign-role-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    // Получаем данные из формы
+    const userId = document.getElementById('user-id').value;
+    const roleId = document.getElementById('role-id').value;
+
+    try {
+        const response = await fetch(`${apiBaseUrl}/api/assign-role`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            },
+            body: JSON.stringify({ user_id: parseInt(userId), role_id: parseInt(roleId) })
+        });
+
+        const result = await response.json();
+        // Обработка успешного ответа
+        if (response.ok) {
+            document.getElementById('assign-role-message').textContent = result.message;
+        } else {
+            // Обработка ошибок
+            document.getElementById('assign-role-message').textContent = result.error || 'Failed to assign role.';
+        }
+    } catch (error) {
+        console.error('Error assigning role:', error);
+        document.getElementById('assign-role-message').textContent = 'Unexpected error occurred.';
+    }
+});
+
+// Проверка доступа администратора
+async function checkAdminAccess() {
+    try {
+        const response = await fetch(`${apiBaseUrl}/api/admin-action`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+
+        if (response.ok) {
+            // Разрешить доступ
+            document.getElementById('admin-section').style.display = 'block';
+        } else {
+            // Запретить доступ
+            document.getElementById('admin-section').style.display = 'none';
+            alert('You do not have access to this section.');
+        }
+    } catch (error) {
+        console.error('Error checking admin access:', error);
+    }
+}
+
+// Вызываем функцию при загрузке страницы (если нужно)
+checkAdminAccess();
+
+// !!! УБРАНО: localStorage.setItem('authToken', result.token); !!!
+// Если вам нужно сохранять токен, делайте это в месте, где вы действительно получаете токен от сервера.

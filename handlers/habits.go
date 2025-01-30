@@ -159,14 +159,24 @@ func UpdateHabit(db *sql.DB) http.HandlerFunc {
 // DeleteHabitByName — Обработчик для удаления привычки по названию
 func DeleteHabitByName(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		name := r.URL.Query().Get("name")
-		if name == "" {
+		var input struct {
+			Name string `json:"name"`
+		}
+
+		// ✅ Читаем JSON body
+		if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+			http.Error(w, "Invalid JSON format", http.StatusBadRequest)
+			return
+		}
+
+		if input.Name == "" {
 			http.Error(w, "Habit name is required", http.StatusBadRequest)
 			return
 		}
 
+		// ✅ Удаляем привычку по имени
 		query := `DELETE FROM habits WHERE name = $1`
-		res, err := db.Exec(query, name)
+		res, err := db.Exec(query, input.Name)
 		if err != nil {
 			http.Error(w, "Failed to delete habit", http.StatusInternalServerError)
 			return
@@ -178,6 +188,7 @@ func DeleteHabitByName(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
+		// ✅ Возвращаем успешный ответ
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{
 			"message": "Habit successfully deleted",

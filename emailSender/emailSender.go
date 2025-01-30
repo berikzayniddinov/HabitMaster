@@ -8,21 +8,27 @@ import (
 	"strconv"
 )
 
-type EmailSender struct {
+type EmailSender interface {
+	SendEmail(to []string, subject, body string) error
+	SendEmailWithAttachment(to []string, subject, body, fileName string, fileData []byte) error
+}
+
+type RealEmailSender struct {
 	Host     string
 	Port     int
 	Username string
 	Password string
 }
 
-func NewEmailSender() *EmailSender {
-	return &EmailSender{
+func NewEmailSender() EmailSender {
+	return &RealEmailSender{
 		Host:     os.Getenv("SMTP_HOST"),
 		Port:     mustParseInt(os.Getenv("SMTP_PORT")),
 		Username: os.Getenv("SMTP_USER"),
 		Password: os.Getenv("SMTP_PASSWORD"),
 	}
 }
+
 func mustParseInt(s string) int {
 	port, err := strconv.Atoi(s)
 	if err != nil {
@@ -30,7 +36,8 @@ func mustParseInt(s string) int {
 	}
 	return port
 }
-func (e *EmailSender) SendEmail(to []string, subject, body string) error {
+
+func (e *RealEmailSender) SendEmail(to []string, subject, body string) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", e.Username)
 	m.SetHeader("To", to...)
@@ -39,12 +46,10 @@ func (e *EmailSender) SendEmail(to []string, subject, body string) error {
 
 	d := gomail.NewDialer(e.Host, e.Port, e.Username, e.Password)
 
-	if err := d.DialAndSend(m); err != nil {
-		return err
-	}
-	return nil
+	return d.DialAndSend(m)
 }
-func (e *EmailSender) SendEmailWithAttachment(to []string, subject, body, fileName string, fileData []byte) error {
+
+func (e *RealEmailSender) SendEmailWithAttachment(to []string, subject, body, fileName string, fileData []byte) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", e.Username)
 	m.SetHeader("To", to...)
@@ -60,11 +65,5 @@ func (e *EmailSender) SendEmailWithAttachment(to []string, subject, body, fileNa
 
 	d := gomail.NewDialer(e.Host, e.Port, e.Username, e.Password)
 
-	if err := d.DialAndSend(m); err != nil {
-		log.Printf("Failed to send email: %v", err) // Лог ошибки
-		return err
-	}
-
-	log.Printf("Email successfully sent to: %v", to) // Лог успешной отправки
-	return nil
+	return d.DialAndSend(m)
 }

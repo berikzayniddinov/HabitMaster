@@ -27,6 +27,17 @@
                 <input type="button" value="Send Email" onclick="sendPromotionalEmail()">
             </form>
         </section>
+        <section>
+            <h2>Assign Role to User</h2>
+            <form id="assign-role-form">
+                <label for="user-id">User ID:</label>
+                <input type="number" id="user-id" name="user_id" placeholder="Enter user ID" required>
+                <label for="role-id">Role ID:</label>
+                <input type="number" id="role-id" name="role_id" placeholder="Enter role ID" required>
+                <button type="submit">Assign Role</button>
+            </form>
+            <div id="assign-role-message"></div>
+        </section>
 
         <!-- User Management Section -->
         <section>
