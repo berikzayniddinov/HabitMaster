@@ -32,3 +32,17 @@ document.getElementById("menuToggle").addEventListener("click", () => {
     const sideMenu = document.getElementById("sideMenu");
     sideMenu.style.display = sideMenu.style.display === "block" ? "none" : "block";
 });
+document.addEventListener("DOMContentLoaded", function () {
+    const menuToggle = document.getElementById("menuToggle");
+    const sideMenu = document.getElementById("sideMenu");
+
+    if (!menuToggle || !sideMenu) {
+        console.error("Menu elements not found!");
+        return;
+    }
+
+    menuToggle.addEventListener("click", function () {
+        sideMenu.classList.toggle("active"); // Добавляет/убирает класс
+    });
+});
+

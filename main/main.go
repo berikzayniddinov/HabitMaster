@@ -1,6 +1,7 @@
 package main
 
 import (
+	"HabitMaster/auth"
 	"HabitMaster/databaseConnector"
 	"HabitMaster/emailSender"
 	"HabitMaster/handlers"
@@ -50,6 +51,7 @@ func rateLimiterMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
@@ -76,7 +78,6 @@ func DecodeTokenAndGetUserID(authHeader string) (int, error) {
 	}
 
 	tokenString := parts[1]
-	// Разбираем JWT:
 	claims := &JWTClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
 		return []byte("your-secret-key"), nil
@@ -85,7 +86,6 @@ func DecodeTokenAndGetUserID(authHeader string) (int, error) {
 		return 0, fmt.Errorf("invalid token")
 	}
 
-	// Предположим, что JWTClaims содержит userID
 	return claims.UserID, nil
 }
 
@@ -126,47 +126,46 @@ func main() {
 	})
 
 	r.Use(rateLimiterMiddleware)
+
 	// Пример защищённого роутера
 	protected := r.PathPrefix("/api/protected").Subrouter()
-
-	// Подключаем ваш AuthMiddleware
 	protected.Use(AuthMiddleware)
 
-	// Определяем обработчики, которые должны быть доступны только авторизованным пользователям
 	protected.HandleFunc("/profile", func(w http.ResponseWriter, r *http.Request) {
 		userID := r.Context().Value("user_id").(int)
 		fmt.Fprintf(w, "This is a protected route. user_id = %d\n", userID)
 	}).Methods("GET")
 
+	// Фронтенд
 	r.HandleFunc("/main.html", func(w http.ResponseWriter, req *http.Request) {
 		http.ServeFile(w, req, "./habittracker/main.html")
 	}).Methods("GET")
 
-	r.HandleFunc("/api/signup", handlers.CreateUser(db)).Methods("POST")
-	r.HandleFunc("/api/users", handlers.CreateUser(db)).Methods("POST")
-	r.HandleFunc("/api/get-users", handlers.GetUsers(db)).Methods("GET")
-	r.HandleFunc("/api/register", handlers.RegisterUser(db, emailService)).Methods("POST")
-	r.HandleFunc("/api/verify-email", handlers.VerifyEmail(db)).Methods("GET")
+	r.HandleFunc("/register", auth.Register).Methods(http.MethodPost)
+	r.HandleFunc("/login", auth.Login).Methods(http.MethodPost)
+	r.HandleFunc("/verify-email", auth.VerifyCode).Methods(http.MethodPost)
+	r.HandleFunc("/logout", auth.Logout).Methods(http.MethodPost)
 
-	jwtSecret := "your-secret-key"
-	r.HandleFunc("/login", handlers.LoginHandler(db, jwtSecret)).Methods("POST")
-
+	// Привычки
 	r.HandleFunc("/api/habits", handlers.CreateHabit(db)).Methods("POST")
 	r.HandleFunc("/api/habits", handlers.GetHabits(db)).Methods("GET")
 	r.HandleFunc("/api/habits", handlers.DeleteHabitByName(db)).Methods("DELETE")
 	r.HandleFunc("/api/habits", handlers.UpdateHabit(db)).Methods("PUT")
-	r.HandleFunc("/api/assign-role", handlers.AssignRoleToUser(db)).Methods("POST")
 
+	// Роли и авторизация
+	r.HandleFunc("/api/assign-role", handlers.AssignRoleToUser(db)).Methods("POST")
 	r.Handle("/api/admin-action", handlers.RoleMiddleware("admin", db)(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		w.Write([]byte("This is an admin action."))
 	})))
 
+	// Цели
 	r.HandleFunc("/api/goals", handlers.CreateGoal(db)).Methods("POST")
 	r.HandleFunc("/api/goals", handlers.GetGoals(db)).Methods("GET")
 	r.HandleFunc("/api/goals", handlers.UpdateGoal(db)).Methods("PUT")
 	r.HandleFunc("/api/goals", handlers.DeleteGoalByName(db)).Methods("DELETE")
 	r.HandleFunc("/api/goals/deleteAll", handlers.DeleteAllGoals(db)).Methods("DELETE") // Новый маршрут
-	
+
+	// Email-уведомления
 	r.HandleFunc("/api/admin/send-mass-email", handlers.SendMassEmailHandler(emailService)).Methods("POST")
 	r.HandleFunc("/api/user/send-support-email", handlers.SendSupportEmailHandler(emailService)).Methods("POST")
 	r.HandleFunc("/api/admin/send-email-with-attachment", handlers.SendEmailWithAttachmentHandler(emailService)).Methods("POST")

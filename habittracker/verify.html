@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const verifyForm = document.getElementById('verify-form');
+
+            verifyForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const code = document.getElementById('code').value.trim();
+                const email = localStorage.getItem("email") || "guest@example.com";
+
+                console.log("📩 Отправляем email и код на сервер:", { email, code });
+
+                try {
+                    const response = await fetch(' https://17c0-85-159-27-200.ngrok-free.app/verify-email', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, code })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.error("❌ Ошибка верификации:", errorData.error);
+                        alert("Ошибка: " + errorData.error);
+                        return;
+                    }
+
+                    const result = await response.json();
+                    console.log("✅ Ответ сервера (JSON):", result);
+
+                    // Сохраняем username в localStorage
+                    const username = result.username || "Guest";
+                    localStorage.setItem("username", username);
+
+                    alert(result.message);
+                    window.location.href = 'main.html';
+                } catch (err) {
+                    console.error("❌ Ошибка верификации:", err);
+                    alert("Ошибка верификации: " + err.message);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<h1>Email Verification</h1>
+<form id="verify-form">
+    <label for="code">Code:</label>
+    <input type="text" id="code" required>
+    <button type="submit">Verify</button>
+</form>
+</body>
+</html>

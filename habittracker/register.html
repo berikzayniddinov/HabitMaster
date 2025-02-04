@@ -7,70 +7,51 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const registrationForm = document.getElementById('registration-form');
-      const nameError = document.getElementById('name-error');
-      const emailError = document.getElementById('email-error');
-      const passwordError = document.getElementById('password-error');
 
-      // Обработчик отправки формы регистрации
       if (registrationForm) {
         registrationForm.addEventListener('submit', async (event) => {
-          event.preventDefault(); // Предотвращаем перезагрузку страницы
+          event.preventDefault();
 
-          // Сброс ошибок
-          nameError.textContent = '';
-          emailError.textContent = '';
-          passwordError.textContent = '';
+          // Сбрасываем ошибки
+          document.getElementById('name-error').textContent = '';
+          document.getElementById('email-error').textContent = '';
+          document.getElementById('password-error').textContent = '';
 
-          // Получаем данные из формы
+          // Получаем данные формы
           const name = document.getElementById('name').value.trim();
           const email = document.getElementById('email').value.trim().toLowerCase();
           const password = document.getElementById('password').value.trim();
 
-          let hasError = false;
-
-          // Проверка ввода
-          if (!name) {
-            nameError.textContent = 'Name is required.';
-            hasError = true;
+          if (!name || !email || !password) {
+            alert('All fields are required!');
+            return;
           }
-
-          if (!email) {
-            emailError.textContent = 'Email is required.';
-            hasError = true;
-          }
-
-          if (!password || password.length < 8) {
-            passwordError.textContent = 'Password must be at least 8 characters.';
-            hasError = true;
-          }
-
-          if (hasError) return;
-
-          console.log('Registration data:', { name, email, password }); // Для проверки
 
           try {
-            const response = await fetch(' https://c189-85-159-27-200.ngrok-free.app/api/signup', { // Замените URL
+            const response = await fetch('https://17c0-85-159-27-200.ngrok-free.app/register', {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ name, email, password }),
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name, email, password })
             });
 
-            if (response.ok) {
-              const result = await response.json();
-              console.log('Server result:', result); // Для отладки
-              alert(`Server says: ${result.message}`);
-              registrationForm.reset();
-              window.location.href = 'login.html';
-            } else {
-              const error = await response.json();
-              alert(`Ошибка: ${error.message || 'Неизвестная ошибка'}`);
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error("❌ Server error:", errorData);
+              alert("Ошибка регистрации: " + errorData.error);
+              return;
             }
 
+            const result = await response.json();
+            console.log("✅ Server JSON response:", result);
+
+            // Сохраняем email в localStorage, чтобы использовать на странице верификации
+            localStorage.setItem('userEmail', email);
+
+            alert(result.message);
+            window.location.href = 'verify.html'; // Перенаправление на страницу верификации
           } catch (err) {
-            console.error('Ошибка при регистрации:', err);
-            alert('Произошла ошибка при регистрации');
+            console.error('❌ Registration error:', err);
+            alert('Registration failed: ' + err.message);
           }
         });
       }

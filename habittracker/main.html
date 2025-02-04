@@ -7,36 +7,53 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="asd.css">
     <style>
-        /* Base styling */
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f3f4f6; /* Soft light background */
+            background-color: #f3f4f6;
             color: #333;
             margin: 0;
             padding: 0;
         }
 
-        /* Navbar styling */
         nav {
-            background-color: #4caf50; /* Calming green */
+            background-color: #4caf50;
             color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
         }
 
         nav h1 {
             color: white;
             font-size: 1.8rem;
+            margin: 0 auto;
         }
 
-        nav .btn {
-            background-color: #6b8e23; /* A slightly darker green for the button */
+        .user-info {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 1rem;
+            font-weight: bold;
             color: white;
         }
 
-        nav .btn:hover {
-            background-color: #556b2f; /* Hover effect for button */
+        .btn-logout {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            border-radius: 5px;
         }
 
-        /* Side menu */
+        .btn-logout:hover {
+            background-color: #c9302c;
+        }
+
         .menu {
             display: none;
             position: fixed;
@@ -47,6 +64,11 @@
             background-color: #ffffff;
             padding: 15px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .menu.active {
+            display: block;
         }
 
         .menu ul {
@@ -66,10 +88,9 @@
         }
 
         .menu li a:hover {
-            color: #4caf50; /* Soft green hover effect */
+            color: #4caf50;
         }
 
-        /* Main content styling */
         main {
             padding: 40px;
             text-align: center;
@@ -82,7 +103,7 @@
 
         h2 {
             font-size: 2rem;
-            color: #4caf50; /* Matching green */
+            color: #4caf50;
         }
 
         p {
@@ -90,7 +111,6 @@
             color: #555;
         }
 
-        /* Center the image */
         .image-container {
             display: flex;
             justify-content: center;
@@ -98,10 +118,9 @@
             margin-top: 20px;
         }
 
-        /* Image styling with smooth hover effect */
         .habit-image {
-            width: 60%; /* Adjust size */
-            max-width: 500px; /* Prevent image from being too large */
+            width: 60%;
+            max-width: 500px;
             border-radius: 8px;
             transition: transform 0.3s ease-in-out;
         }
@@ -112,34 +131,70 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-light">
-        <button class="btn btn-outline-secondary" id="menuToggle">
-            <span>&#9776;</span>
-        </button>
-        <h1 class="mx-auto">Habit Master</h1>
-    </nav>
-
-    <div class="menu bg-light" id="sideMenu">
-        <ul class="list-unstyled">
-            <li><a href="send_email.html">Send Email</a></li>
-            <li><a href="goals.html">Goals</a></li>
-            <li><a href="habits.html">Habits</a></li>
-            <li><a href="login.html">Login</a></li>
-            <li><a href="register.html">Registration</a></li>
-        </ul>
+<nav class="navbar navbar-light">
+    <button class="btn btn-outline-secondary" id="menuToggle">
+        <span>&#9776;</span>
+    </button>
+    <h1 class="mx-auto">Habit Master</h1>
+    <div class="user-info">
+        <span id="username-display">Welcome, Guest</span>
+        <button id="logout-btn" class="btn-logout" style="display: none;">Logout</button>
     </div>
+</nav>
 
-    <main class="container">
-        <h2>Welcome to Habit Master</h2>
-        <p>Track your habits and goals every day, and make progress towards a better you.</p>
-        <p>Use the menu to explore different sections like setting Regoals, checking habits, or sending an email.</p>
-        <div class="image-container">
-            <img src="https://thegoodperspective.com/wp-content/uploads/2023/04/habits.jpg" alt="Habits" class="habit-image">
-        </div>
-    </main>
-    <footer>
-        <p>&copy; 2025 HabitMaster. All rights reserved.</p>
-    </footer>
-    <script src="script.js"></script>
+<div class="menu bg-light" id="sideMenu">
+    <ul class="list-unstyled">
+        <li><a href="send_email.html">Send Email</a></li>
+        <li><a href="goals.html">Goals</a></li>
+        <li><a href="habits.html">Habits</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="register.html">Registration</a></li>
+    </ul>
+</div>
+
+<main class="container">
+    <h2>Welcome to Habit Master</h2>
+    <p>Track your habits and goals every day, and make progress towards a better you.</p>
+    <p>Use the menu to explore different sections like setting Goals, checking habits, or sending an email.</p>
+    <div class="image-container">
+        <img src="https://thegoodperspective.com/wp-content/uploads/2023/04/habits.jpg" alt="Habits" class="habit-image">
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2025 HabitMaster. All rights reserved.</p>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const menuToggle = document.getElementById('menuToggle');
+        const sideMenu = document.getElementById('sideMenu');
+        const usernameDisplay = document.getElementById('username-display');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        menuToggle.addEventListener('click', () => {
+            console.log("📌 Меню нажато!");
+            sideMenu.classList.toggle('active');
+        });
+
+        const username = localStorage.getItem('username') || "Guest";
+        usernameDisplay.textContent = `Welcome, ${username}`;
+
+        if (username !== "Guest") {
+            logoutBtn.style.display = "inline-block";
+        }
+
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await fetch("https://17c0-85-159-27-200.ngrok-free.app/logout", { method: "POST", credentials: "include" });
+            } catch (error) {
+                console.error("Ошибка при выходе:", error);
+            }
+            localStorage.removeItem("username");
+            alert("You have been logged out!");
+            window.location.href = "login.html";
+        });
+    });
+</script>
 </body>
 </html>

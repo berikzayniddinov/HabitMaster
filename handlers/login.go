@@ -9,7 +9,6 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/sirupsen/logrus"
-	"golang.org/x/crypto/bcrypt"
 )
 
 var logFile *os.File
@@ -58,87 +57,7 @@ type JWTClaims struct {
 }
 
 // LoginHandler - обработчик входа пользователя
-func LoginHandler(db *sql.DB, jwtSecret string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			jsonError(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
-			return
-		}
 
-		var req LoginRequest
-		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			logrus.Error("Error decoding JSON:", err)
-			jsonError(w, "Invalid JSON format", http.StatusBadRequest)
-			return
-		}
-
-		// Проверка обязательных полей
-		if req.Email == "" || req.Password == "" {
-			logrus.Warn("Missing email or password")
-			jsonError(w, "Email and Password are required", http.StatusBadRequest)
-			return
-		}
-
-		// Получение пользователя из базы данных
-		var storedPassword string
-		var isVerified bool
-		err := db.QueryRow("SELECT password, is_verified FROM users WHERE email = $1", req.Email).Scan(&storedPassword, &isVerified)
-		if err == sql.ErrNoRows {
-			logrus.Warn("No user found with email:", req.Email)
-			jsonError(w, "Invalid email or password", http.StatusUnauthorized)
-			return
-		} else if err != nil {
-			logrus.Error("Database query error:", err)
-			jsonError(w, "Server error", http.StatusInternalServerError)
-			return
-		}
-
-		// Проверка подтверждения email
-		if !isVerified {
-			logrus.Warn("Email not verified for user:", req.Email)
-			jsonError(w, "Email is not verified", http.StatusUnauthorized)
-			return
-		}
-
-		// Проверка пароля
-		if err := bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(req.Password)); err != nil {
-			logrus.Warn("Invalid password for user:", req.Email)
-			jsonError(w, "Invalid email or password", http.StatusUnauthorized)
-			return
-		}
-
-		// Генерация токена
-		claims := JWTClaims{
-			Email: req.Email,
-			StandardClaims: jwt.StandardClaims{
-				ExpiresAt: time.Now().Add(72 * time.Hour).Unix(), // Токен действителен 72 часа
-				IssuedAt:  time.Now().Unix(),
-			},
-		}
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-		tokenString, err := token.SignedString([]byte(jwtSecret))
-		if err != nil {
-			logrus.Error("Error generating token:", err)
-			jsonError(w, "Failed to generate token", http.StatusInternalServerError)
-			return
-		}
-
-		// Лог успешного входа
-		logrus.WithFields(logrus.Fields{
-			"timestamp": time.Now().Format(time.RFC3339),
-			"email":     req.Email,
-			"status":    "success",
-		}).Info("User logged in successfully")
-
-		// Успешный ответ
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(LoginResponse{
-			Message: "Login successful",
-			Token:   tokenString,
-		})
-	}
-}
 func AssignRoleToUser(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var data struct {
