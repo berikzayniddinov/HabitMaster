@@ -39,7 +39,7 @@
         const sort = document.getElementById('habit-sort')?.value || '';
         const page = currentHabitPage;
 
-        const url = `https://17c0-85-159-27-200.ngrok-free.app/api/habits?filter=${encodeURIComponent(filter)}&sort=${encodeURIComponent(sort)}&page=${page}`;
+        const url = `https://localhost:8080/api/habits?filter=${encodeURIComponent(filter)}&sort=${encodeURIComponent(sort)}&page=${page}`;
         try {
             const response = await fetch(url, { method: 'GET' });
             if (!response.ok) {

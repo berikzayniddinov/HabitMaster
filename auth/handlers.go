@@ -101,7 +101,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	err = databaseConnector.ConnectBD().QueryRow(query, user.Name, user.Email, string(hashedPassword), verificationCode).Scan(&user.UserID)
 
 	if err != nil {
-		log.Printf("Database error: %v", err)
+		log.Printf("❌ Ошибка БД при регистрации: %v", err)
 		http.Error(w, `{"error": "Database insert error"}`, http.StatusInternalServerError)
 		return
 	}
@@ -109,28 +109,33 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	// 6. Отправляем код по email
 	err = sendVerificationEmail(user.Email, verificationCode)
 	if err != nil {
-		log.Printf("Email send error: %v", err)
+		log.Printf("❌ Ошибка отправки email: %v", err)
 		http.Error(w, `{"error": "Failed to send verification email"}`, http.StatusInternalServerError)
 		return
 	}
 
-	// ✅ **Корректно отправляем JSON**
+	// ✅ **Отправляем JSON с `201 Created`**
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]string{
+	w.WriteHeader(http.StatusOK) // 👈 **Теперь статус отправляется ЧЁТКО перед JSON-ответом**
+
+	log.Println("✅ Регистрация успешна, отправлен статус 201")
+
+	// **Кодируем JSON-ответ**
+	if err := json.NewEncoder(w).Encode(map[string]string{
 		"message":  "Check your email for the verification code.",
 		"redirect": "/verify.html",
-	})
+	}); err != nil {
+		log.Printf("❌ Ошибка кодирования JSON: %v", err)
+	}
 }
 
 // Логин пользователя
 func Login(w http.ResponseWriter, r *http.Request) {
 	var user handlers.User
+
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid input"})
+		http.Error(w, `{"error": "Invalid JSON format"}`, http.StatusBadRequest)
 		return
 	}
 
@@ -139,18 +144,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	err = databaseConnector.ConnectBD().QueryRow(query, user.Email).Scan(&dbUser.UserID, &dbUser.Email, &dbUser.Password, &dbUser.Role)
 
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid email or password"})
+		http.Error(w, `{"error": "Invalid email or password"}`, http.StatusUnauthorized)
 		return
 	}
 
 	// Проверка пароля
 	err = bcrypt.CompareHashAndPassword([]byte(dbUser.Password), []byte(user.Password))
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid email or password"})
+		http.Error(w, `{"error": "Invalid email or password"}`, http.StatusUnauthorized)
 		return
 	}
 
@@ -166,20 +167,26 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(jwtKey)
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Error generating token"})
+		http.Error(w, `{"error": "Error generating token"}`, http.StatusInternalServerError)
 		return
 	}
 
-	// **Отправляем ЧИСТЫЙ JSON без мусора**
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{
+	// ✅ Формируем JSON-ответ
+	response := map[string]string{
 		"email": dbUser.Email,
 		"role":  dbUser.Role,
 		"token": token,
-	})
+	}
+
+	// ✅ Сначала кодируем JSON, а затем устанавливаем статус
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		http.Error(w, `{"error": "Error encoding response"}`, http.StatusInternalServerError)
+		return
+	}
+
+	log.Printf("📩 Ответ сервера отправлен: %+v\n", response)
 }
 
 // Проверка 4-значного кода

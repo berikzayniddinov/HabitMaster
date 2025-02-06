@@ -1,4 +1,4 @@
-const apiBaseUrl = 'https://17c0-85-159-27-200.ngrok-free.app'; // Замените на нужный URL (или http://localhost:8080)
+const apiBaseUrl = 'https://localhost:8080'; // Замените на нужный URL (или http://localhost:8080)
 
 // Общая функция для выполнения запросов
 async function fetchData(endpoint, options = {}) {

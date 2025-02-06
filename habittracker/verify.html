@@ -17,7 +17,7 @@
                 console.log("📩 Отправляем email и код на сервер:", { email, code });
 
                 try {
-                    const response = await fetch(' https://17c0-85-159-27-200.ngrok-free.app/verify-email', {
+                    const response = await fetch(' https://localhost:8080/verify-email', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email, code })
